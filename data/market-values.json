@@ -1,0 +1,1930 @@
+[
+  {
+    "key": "audi|a4|2016|diesel",
+    "make": "Audi",
+    "model": "A4",
+    "year": 2016,
+    "fuel": "diesel",
+    "referenceValue": 14000,
+    "low": 6800,
+    "high": 18995,
+    "typicalKm": 200000,
+    "comparables": [
+      {
+        "title": "Audi A4 2.0 TDI SE Ultra",
+        "askingPrice": 14995,
+        "year": 2016,
+        "odometerKm": 164346,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2016"
+      },
+      {
+        "title": "Audi A4 S line Black Edition",
+        "askingPrice": 16999,
+        "year": 2016,
+        "odometerKm": 190063,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2016"
+      },
+      {
+        "title": "Audi A4 S line 2.0 TDI quattro",
+        "askingPrice": 18995,
+        "year": 2016,
+        "odometerKm": 227789,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2016"
+      },
+      {
+        "title": "Audi A4 2.0 TDI",
+        "askingPrice": 9850,
+        "year": 2016,
+        "odometerKm": 236853,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2016"
+      },
+      {
+        "title": "Audi A4 quattro",
+        "askingPrice": 16950,
+        "year": 2016,
+        "odometerKm": 131000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2016"
+      },
+      {
+        "title": "Audi A4 2.0 TDI",
+        "askingPrice": 7950,
+        "year": 2016,
+        "odometerKm": 247000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2016"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "2.0 TDI. Condition and S line/quattro spec matter more than mileage. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "audi|a4|2019|diesel",
+    "make": "Audi",
+    "model": "A4",
+    "year": 2019,
+    "fuel": "diesel",
+    "referenceValue": 24000,
+    "low": 21900,
+    "high": 30000,
+    "typicalKm": 170000,
+    "comparables": [
+      {
+        "title": "Audi A4 2.0 TDI",
+        "askingPrice": 23950,
+        "year": 2019,
+        "odometerKm": 175000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2019"
+      },
+      {
+        "title": "Audi A4 S line 2.0 TDI",
+        "askingPrice": 23995,
+        "year": 2019,
+        "odometerKm": 185300,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2019"
+      },
+      {
+        "title": "Audi A4 2.0 TDI 150 SE",
+        "askingPrice": 21900,
+        "year": 2019,
+        "odometerKm": 177000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2019"
+      },
+      {
+        "title": "Audi A4 40 TDI Black Edition",
+        "askingPrice": 26300,
+        "year": 2019,
+        "odometerKm": 119091,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2019"
+      },
+      {
+        "title": "Audi A4 2.0 TDI",
+        "askingPrice": 30000,
+        "year": 2019,
+        "odometerKm": 86824,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2019"
+      }
+    ],
+    "confidence": "high",
+    "notes": "2.0 TDI, mostly S line. Most listings are high mileage. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "audi|a4|2022|diesel",
+    "make": "Audi",
+    "model": "A4",
+    "year": 2022,
+    "fuel": "diesel",
+    "referenceValue": 35500,
+    "low": 25550,
+    "high": 39850,
+    "typicalKm": 80000,
+    "comparables": [
+      {
+        "title": "Audi A4 35 TDI S line",
+        "askingPrice": 37975,
+        "year": 2022,
+        "odometerKm": 80094,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2022"
+      },
+      {
+        "title": "Audi A4 35 TDI Sport auto",
+        "askingPrice": 25550,
+        "year": 2022,
+        "odometerKm": 201168,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2022"
+      },
+      {
+        "title": "Audi A4 35 TDI SE S tronic",
+        "askingPrice": 35900,
+        "year": 2022,
+        "odometerKm": 50000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2022"
+      },
+      {
+        "title": "Audi A4 2.0 TDI",
+        "askingPrice": 39850,
+        "year": 2022,
+        "odometerKm": 40642,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2022"
+      },
+      {
+        "title": "Audi A4 2.0 TDI",
+        "askingPrice": 29900,
+        "year": 2022,
+        "odometerKm": 95000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Audi/A4/2022"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "35 TDI S line and Sport. Very high mileage cuts the price a lot. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "bmw|3 series|2016|diesel",
+    "make": "BMW",
+    "model": "3 Series",
+    "year": 2016,
+    "fuel": "diesel",
+    "referenceValue": 18950,
+    "low": 15950,
+    "high": 21900,
+    "typicalKm": 77000,
+    "comparables": [
+      {
+        "title": "BMW 320d Luxury",
+        "askingPrice": 17950,
+        "year": 2016,
+        "odometerKm": 83000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/bmw-3-series-17950-2016-bmw-3-series-320d-luxury/40591161"
+      },
+      {
+        "title": "BMW 320d Luxury auto",
+        "askingPrice": 15950,
+        "year": 2016,
+        "odometerKm": 76000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/bmw-3-series-16950-2016-bmw-320d-luxury-2-0-autom/42023207"
+      },
+      {
+        "title": "BMW 320d M Sport Touring auto",
+        "askingPrice": 18950,
+        "year": 2016,
+        "odometerKm": 77500,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/BMW/3-Series/2016"
+      },
+      {
+        "title": "BMW 320d auto",
+        "askingPrice": 18425,
+        "year": 2016,
+        "odometerKm": 89000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/BMW/3-Series/2016"
+      },
+      {
+        "title": "BMW 320d M Sport",
+        "askingPrice": 21900,
+        "year": 2016,
+        "odometerKm": 73147,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/BMW/3-Series/2016"
+      },
+      {
+        "title": "BMW 320d M Sport Pro auto",
+        "askingPrice": 20900,
+        "year": 2016,
+        "odometerKm": 69000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/BMW/3-Series/2016"
+      }
+    ],
+    "confidence": "high",
+    "notes": "320d. The listings seen were lower mileage than typical, and M Sport asks more. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "bmw|3 series|2019|diesel",
+    "make": "BMW",
+    "model": "3 Series",
+    "year": 2019,
+    "fuel": "diesel",
+    "referenceValue": 25000,
+    "low": 19950,
+    "high": 29450,
+    "typicalKm": 115000,
+    "comparables": [
+      {
+        "title": "BMW 320d M Sport",
+        "askingPrice": 27995,
+        "year": 2019,
+        "odometerKm": 141000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/BMW/3-Series/2019"
+      },
+      {
+        "title": "BMW 320d xDrive M Sport",
+        "askingPrice": 29450,
+        "year": 2019,
+        "odometerKm": 61100,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/BMW/3-Series/2019"
+      },
+      {
+        "title": "BMW 3 Series",
+        "askingPrice": 23495,
+        "year": 2019,
+        "odometerKm": 112558,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/BMW/3-Series/2019"
+      },
+      {
+        "title": "BMW 318d Sport",
+        "askingPrice": 25995,
+        "year": 2019,
+        "odometerKm": 143051,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/BMW/3-Series/2019"
+      },
+      {
+        "title": "BMW 320d Luxury auto",
+        "askingPrice": 19950,
+        "year": 2019,
+        "odometerKm": 64000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/BMW/3-Series/2019"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "G20 shape arrived in 2019 and asks more than the older F30. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "bmw|3 series|2022|plug-in-hybrid",
+    "make": "BMW",
+    "model": "3 Series",
+    "year": 2022,
+    "fuel": "plug-in-hybrid",
+    "referenceValue": 33000,
+    "low": 29950,
+    "high": 39950,
+    "typicalKm": 95000,
+    "comparables": [
+      {
+        "title": "BMW 330e M Sport Pro",
+        "askingPrice": 30950,
+        "year": 2022,
+        "odometerKm": 122310,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/BMW/3-Series/2022"
+      },
+      {
+        "title": "BMW 330e M Sport Touring",
+        "askingPrice": 36950,
+        "year": 2022,
+        "odometerKm": 95664,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/BMW/3-Series/2022"
+      },
+      {
+        "title": "BMW 330e SE Pro",
+        "askingPrice": 29950,
+        "year": 2022,
+        "odometerKm": 95518,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/BMW/3-Series/2022"
+      },
+      {
+        "title": "BMW 330e M Sport Pro",
+        "askingPrice": 39950,
+        "year": 2022,
+        "odometerKm": 44461,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/BMW/3-Series/2022"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Mostly 330e plug-in hybrids. Touring and M Sport Pro ask more. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "ford|fiesta|2016|petrol",
+    "make": "Ford",
+    "model": "Fiesta",
+    "year": 2016,
+    "fuel": "petrol",
+    "referenceValue": 9000,
+    "low": 6900,
+    "high": 13000,
+    "typicalKm": 125000,
+    "comparables": [
+      {
+        "title": "Ford Fiesta 1.0 Zetec-S Black Edition",
+        "askingPrice": 9295,
+        "year": 2016,
+        "odometerKm": 129793,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Fiesta/2016"
+      },
+      {
+        "title": "Ford Fiesta 1.25 Titanium",
+        "askingPrice": 10900,
+        "year": 2016,
+        "odometerKm": 48280,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Fiesta/2016"
+      },
+      {
+        "title": "Ford Fiesta 1.0 auto",
+        "askingPrice": 7000,
+        "year": 2016,
+        "odometerKm": 178990,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Fiesta/2016"
+      },
+      {
+        "title": "Ford Fiesta ST 1.6",
+        "askingPrice": 13000,
+        "year": 2016,
+        "odometerKm": 123919,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Fiesta/2016"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "1.0 EcoBoost and 1.25 petrols. The ST asks much more. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "ford|fiesta|2019|petrol",
+    "make": "Ford",
+    "model": "Fiesta",
+    "year": 2019,
+    "fuel": "petrol",
+    "referenceValue": 14500,
+    "low": 12000,
+    "high": 17950,
+    "typicalKm": 50000,
+    "comparables": [
+      {
+        "title": "Ford Fiesta Titanium 1.1",
+        "askingPrice": 13500,
+        "year": 2019,
+        "odometerKm": 46500,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/ford-fiesta-2019/38936352"
+      },
+      {
+        "title": "Ford Fiesta 1.1",
+        "askingPrice": 14950,
+        "year": 2019,
+        "odometerKm": 54000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Fiesta/2019"
+      },
+      {
+        "title": "Ford Fiesta Titanium 1.1",
+        "askingPrice": 17950,
+        "year": 2019,
+        "odometerKm": 32064,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Fiesta/2019"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "1.1 Titanium is common. Most listings have low mileage. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "ford|fiesta|2021|petrol",
+    "make": "Ford",
+    "model": "Fiesta",
+    "year": 2021,
+    "fuel": "petrol",
+    "referenceValue": 15000,
+    "low": 14950,
+    "high": 17950,
+    "typicalKm": 95000,
+    "comparables": [
+      {
+        "title": "Ford Fiesta 1.1 Trend",
+        "askingPrice": 14995,
+        "year": 2021,
+        "odometerKm": 107401,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Fiesta/2021"
+      },
+      {
+        "title": "Ford Fiesta Titanium 1.0",
+        "askingPrice": 14995,
+        "year": 2021,
+        "odometerKm": 128491,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Fiesta/2021"
+      },
+      {
+        "title": "Ford Fiesta 1.1",
+        "askingPrice": 17950,
+        "year": 2021,
+        "odometerKm": 24540,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Fiesta/2021"
+      },
+      {
+        "title": "Ford Fiesta Titanium 1.0",
+        "askingPrice": 14950,
+        "year": 2021,
+        "odometerKm": 66000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Fiesta/2021"
+      },
+      {
+        "title": "Ford Fiesta 1.0 auto",
+        "askingPrice": 15450,
+        "year": 2021,
+        "odometerKm": 97000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Fiesta/2021"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Prices are tightly grouped around €15,000. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "ford|focus|2016|diesel",
+    "make": "Ford",
+    "model": "Focus",
+    "year": 2016,
+    "fuel": "diesel",
+    "referenceValue": 8500,
+    "low": 5400,
+    "high": 11500,
+    "typicalKm": 170000,
+    "comparables": [
+      {
+        "title": "Ford Focus Zetec 1.5 TDCi",
+        "askingPrice": 6950,
+        "year": 2016,
+        "odometerKm": 243000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/ford-focus/42427859"
+      },
+      {
+        "title": "Ford Focus Zetec 1.0 petrol",
+        "askingPrice": 11500,
+        "year": 2016,
+        "odometerKm": 100084,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/ford-focus-2016/38895995"
+      }
+    ],
+    "confidence": "low",
+    "notes": "Few listings with full details. Petrol 1.0 EcoBoosts with lower mileage ask more. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "ford|focus|2019|diesel",
+    "make": "Ford",
+    "model": "Focus",
+    "year": 2019,
+    "fuel": "diesel",
+    "referenceValue": 14000,
+    "low": 12900,
+    "high": 16999,
+    "typicalKm": 140000,
+    "comparables": [
+      {
+        "title": "Ford Focus Zetec 1.5 TDCi",
+        "askingPrice": 12900,
+        "year": 2019,
+        "odometerKm": 63759,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/ford-focus-2019/39002893"
+      },
+      {
+        "title": "Ford Focus Titanium 1.5 TDCi",
+        "askingPrice": 16999,
+        "year": 2019,
+        "odometerKm": 149000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/ford-focus-2019/38795650"
+      },
+      {
+        "title": "Ford Focus ST-Line 1.5 TDCi",
+        "askingPrice": 13850,
+        "year": 2019,
+        "odometerKm": 205000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Focus/2019"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "1.5 TDCi Zetec, Titanium and ST-Line. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "ford|focus|2019|petrol",
+    "make": "Ford",
+    "model": "Focus",
+    "year": 2019,
+    "fuel": "petrol",
+    "referenceValue": 14200,
+    "low": 13500,
+    "high": 14895,
+    "typicalKm": 80000,
+    "comparables": [
+      {
+        "title": "Ford Focus 1.0 EcoBoost",
+        "askingPrice": 14895,
+        "year": 2019,
+        "odometerKm": 85000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Focus/2019"
+      },
+      {
+        "title": "Ford Focus 1.0 EcoBoost",
+        "askingPrice": 13500,
+        "year": 2019,
+        "odometerKm": 78000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Focus/2019"
+      }
+    ],
+    "confidence": "low",
+    "notes": "1.0 EcoBoost petrols with under 90,000 km. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "ford|focus|2022|petrol",
+    "make": "Ford",
+    "model": "Focus",
+    "year": 2022,
+    "fuel": "petrol",
+    "referenceValue": 22000,
+    "low": 18950,
+    "high": 22950,
+    "typicalKm": 65000,
+    "comparables": [
+      {
+        "title": "Ford Focus 1.0 EcoBoost",
+        "askingPrice": 22950,
+        "year": 2022,
+        "odometerKm": 51867,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Focus/2022"
+      },
+      {
+        "title": "Ford Focus 1.0 EcoBoost",
+        "askingPrice": 21995,
+        "year": 2022,
+        "odometerKm": 67000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Focus/2022"
+      },
+      {
+        "title": "Ford Focus 1.0 EcoBoost",
+        "askingPrice": 21995,
+        "year": 2022,
+        "odometerKm": 63866,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Focus/2022"
+      },
+      {
+        "title": "Ford Focus ST-Line Style 1.0",
+        "askingPrice": 18950,
+        "year": 2022,
+        "odometerKm": 79500,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Ford/Focus/2022"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "1.0 EcoBoost petrols cluster around €22,000. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "hyundai|tucson|2016|diesel",
+    "make": "Hyundai",
+    "model": "Tucson",
+    "year": 2016,
+    "fuel": "diesel",
+    "referenceValue": 11400,
+    "low": 7995,
+    "high": 13495,
+    "typicalKm": 152000,
+    "comparables": [
+      {
+        "title": "Hyundai Tucson Executive 1.7 diesel",
+        "askingPrice": 11800,
+        "year": 2016,
+        "odometerKm": 113000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/2016-hyundai-tucson/40579461"
+      },
+      {
+        "title": "Hyundai Tucson Executive 1.7 CRDi",
+        "askingPrice": 11999,
+        "year": 2016,
+        "odometerKm": 180250,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/hyundai-tucson-2016/41654228"
+      },
+      {
+        "title": "Hyundai Tucson 1.7 diesel",
+        "askingPrice": 11100,
+        "year": 2016,
+        "odometerKm": 162000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Hyundai/Tucson/2016"
+      },
+      {
+        "title": "Hyundai Tucson 1.7 diesel",
+        "askingPrice": 10445,
+        "year": 2016,
+        "odometerKm": 141622,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Hyundai/Tucson/2016"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "1.7 CRDi Executive is the common spec. Prices are tightly grouped. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "hyundai|tucson|2019|diesel",
+    "make": "Hyundai",
+    "model": "Tucson",
+    "year": 2019,
+    "fuel": "diesel",
+    "referenceValue": 18500,
+    "low": 14800,
+    "high": 20999,
+    "typicalKm": 100000,
+    "comparables": [
+      {
+        "title": "Hyundai Tucson 1.6 diesel",
+        "askingPrice": 20999,
+        "year": 2019,
+        "odometerKm": 73800,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/hyundai-tucson-2019/38587485"
+      },
+      {
+        "title": "Hyundai Tucson Comfort Plus 1.6 diesel",
+        "askingPrice": 20750,
+        "year": 2019,
+        "odometerKm": 97000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/hyundai-tucson-2019/39866235"
+      },
+      {
+        "title": "Hyundai Tucson 1.6 diesel",
+        "askingPrice": 15200,
+        "year": 2019,
+        "odometerKm": 170000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Hyundai/Tucson/2019"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "1.6 CRDi. Mileage is the main driver of price. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "hyundai|tucson|2022|diesel",
+    "make": "Hyundai",
+    "model": "Tucson",
+    "year": 2022,
+    "fuel": "diesel",
+    "referenceValue": 29000,
+    "low": 23975,
+    "high": 36995,
+    "typicalKm": 70000,
+    "comparables": [
+      {
+        "title": "Hyundai Tucson Executive Plus 1.6 diesel",
+        "askingPrice": 28990,
+        "year": 2022,
+        "odometerKm": 115000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/hyundai-tucson-2022/41915639"
+      },
+      {
+        "title": "Hyundai Tucson Executive Plus",
+        "askingPrice": 29250,
+        "year": 2022,
+        "odometerKm": 65000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Hyundai/Tucson/2022"
+      },
+      {
+        "title": "Hyundai Tucson 1.6 diesel",
+        "askingPrice": 29995,
+        "year": 2022,
+        "odometerKm": 75000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Hyundai/Tucson/2022"
+      },
+      {
+        "title": "Hyundai Tucson 2WD Executive 1.6 diesel",
+        "askingPrice": 28950,
+        "year": 2022,
+        "odometerKm": 33000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Hyundai/Tucson/2022"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Current-shape Tucson holds value well. Executive Plus is common. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "kia|sportage|2016|diesel",
+    "make": "Kia",
+    "model": "Sportage",
+    "year": 2016,
+    "fuel": "diesel",
+    "referenceValue": 11400,
+    "low": 8450,
+    "high": 13950,
+    "typicalKm": 155000,
+    "comparables": [
+      {
+        "title": "Kia Sportage 1.7 diesel",
+        "askingPrice": 10750,
+        "year": 2016,
+        "odometerKm": 167000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Kia/Sportage/2016"
+      },
+      {
+        "title": "Kia Sportage 1.7 diesel",
+        "askingPrice": 11995,
+        "year": 2016,
+        "odometerKm": 138725,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Kia/Sportage/2016"
+      },
+      {
+        "title": "Kia Sportage 1.7 D GSE",
+        "askingPrice": 13950,
+        "year": 2016,
+        "odometerKm": 57543,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Kia/Sportage/2016"
+      },
+      {
+        "title": "Kia Sportage 1.7 LX",
+        "askingPrice": 8950,
+        "year": 2016,
+        "odometerKm": 178525,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Kia/Sportage/2016"
+      },
+      {
+        "title": "Kia Sportage 2.0 diesel",
+        "askingPrice": 9500,
+        "year": 2016,
+        "odometerKm": 248470,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Kia/Sportage/2016"
+      },
+      {
+        "title": "Kia Sportage 1.7 diesel",
+        "askingPrice": 13950,
+        "year": 2016,
+        "odometerKm": 143231,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Kia/Sportage/2016"
+      }
+    ],
+    "confidence": "high",
+    "notes": "1.7 CRDi is the usual engine. Lower mileage adds a lot. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "kia|sportage|2019|diesel",
+    "make": "Kia",
+    "model": "Sportage",
+    "year": 2019,
+    "fuel": "diesel",
+    "referenceValue": 18500,
+    "low": 13995,
+    "high": 19950,
+    "typicalKm": 135000,
+    "comparables": [
+      {
+        "title": "Kia Sportage 1.6 CRDi K4",
+        "askingPrice": 19950,
+        "year": 2019,
+        "odometerKm": 90965,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/kia-sportage-1-6-k4-2019/40598397"
+      },
+      {
+        "title": "Kia Sportage 1.6 CRDi K4 184bhp",
+        "askingPrice": 18500,
+        "year": 2019,
+        "odometerKm": 119000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/kia-sportage-1-6crdi-k4-184bhp-2019/40531405"
+      },
+      {
+        "title": "Kia Sportage 1.6 diesel",
+        "askingPrice": 18900,
+        "year": 2019,
+        "odometerKm": 152004,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Kia/Sportage/2019"
+      },
+      {
+        "title": "Kia Sportage 1.6 diesel",
+        "askingPrice": 13995,
+        "year": 2019,
+        "odometerKm": 192313,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Kia/Sportage/2019"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "1.6 CRDi K3 and K4 trims. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "kia|sportage|2022|diesel",
+    "make": "Kia",
+    "model": "Sportage",
+    "year": 2022,
+    "fuel": "diesel",
+    "referenceValue": 28500,
+    "low": 23945,
+    "high": 32950,
+    "typicalKm": 72000,
+    "comparables": [
+      {
+        "title": "Kia Sportage 1.6 diesel",
+        "askingPrice": 29950,
+        "year": 2022,
+        "odometerKm": 68868,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Kia/Sportage/2022"
+      },
+      {
+        "title": "Kia Sportage 1.6 diesel",
+        "askingPrice": 29950,
+        "year": 2022,
+        "odometerKm": 79000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Kia/Sportage/2022"
+      },
+      {
+        "title": "Kia Sportage 1.6 diesel hybrid",
+        "askingPrice": 27950,
+        "year": 2022,
+        "odometerKm": 90500,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Kia/Sportage/2022"
+      },
+      {
+        "title": "Kia Sportage 1.6 diesel hybrid",
+        "askingPrice": 23945,
+        "year": 2022,
+        "odometerKm": 54000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Kia/Sportage/2022"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Current model. Mild-hybrid diesels are common. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "nissan|qashqai|2016|diesel",
+    "make": "Nissan",
+    "model": "Qashqai",
+    "year": 2016,
+    "fuel": "diesel",
+    "referenceValue": 10950,
+    "low": 9950,
+    "high": 12999,
+    "typicalKm": 185000,
+    "comparables": [
+      {
+        "title": "Nissan Qashqai SVE 1.5 dCi",
+        "askingPrice": 9950,
+        "year": 2016,
+        "odometerKm": 170781,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/nissan-qashqai-2016/41032956"
+      },
+      {
+        "title": "Nissan Qashqai 1.5 dCi",
+        "askingPrice": 10950,
+        "year": 2016,
+        "odometerKm": 204190,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Nissan/Qashqai/2016"
+      },
+      {
+        "title": "Nissan Qashqai",
+        "askingPrice": 10999,
+        "year": 2016,
+        "odometerKm": null,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/nissan-qashqai-2016/38587527"
+      },
+      {
+        "title": "Nissan Qashqai",
+        "askingPrice": 12999,
+        "year": 2016,
+        "odometerKm": null,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/nissan-qashqai-2016/38516979"
+      }
+    ],
+    "confidence": "low",
+    "notes": "1.5 dCi diesels. Few listings showed mileage. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "nissan|qashqai|2019|diesel",
+    "make": "Nissan",
+    "model": "Qashqai",
+    "year": 2019,
+    "fuel": "diesel",
+    "referenceValue": 14500,
+    "low": 13250,
+    "high": 19950,
+    "typicalKm": 175000,
+    "comparables": [
+      {
+        "title": "Nissan Qashqai 1.5 dCi",
+        "askingPrice": 14950,
+        "year": 2019,
+        "odometerKm": 161417,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Nissan/Qashqai/2019"
+      },
+      {
+        "title": "Nissan Qashqai 1.5 dCi",
+        "askingPrice": 13950,
+        "year": 2019,
+        "odometerKm": 179900,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Nissan/Qashqai/2019"
+      },
+      {
+        "title": "Nissan Qashqai 1.5 dCi",
+        "askingPrice": 13995,
+        "year": 2019,
+        "odometerKm": 175418,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Nissan/Qashqai/2019"
+      },
+      {
+        "title": "Nissan Qashqai 1.5 dCi",
+        "askingPrice": 19950,
+        "year": 2019,
+        "odometerKm": 115671,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Nissan/Qashqai/2019"
+      },
+      {
+        "title": "Nissan Qashqai 1.5 dCi",
+        "askingPrice": 13250,
+        "year": 2019,
+        "odometerKm": 180000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Nissan/Qashqai/2019"
+      },
+      {
+        "title": "Nissan Qashqai 1.5 dCi",
+        "askingPrice": 15450,
+        "year": 2019,
+        "odometerKm": 177786,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Nissan/Qashqai/2019"
+      }
+    ],
+    "confidence": "high",
+    "notes": "1.5 dCi. Most listings are high mileage, around 175,000 km. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "nissan|qashqai|2022|petrol",
+    "make": "Nissan",
+    "model": "Qashqai",
+    "year": 2022,
+    "fuel": "petrol",
+    "referenceValue": 30000,
+    "low": 25950,
+    "high": 31850,
+    "typicalKm": 40000,
+    "comparables": [
+      {
+        "title": "Nissan Qashqai 1.3 mild hybrid",
+        "askingPrice": 31850,
+        "year": 2022,
+        "odometerKm": 22000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Nissan/Qashqai/2022"
+      },
+      {
+        "title": "Nissan Qashqai 1.3 mild hybrid",
+        "askingPrice": 30850,
+        "year": 2022,
+        "odometerKm": 38000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Nissan/Qashqai/2022"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Current model, 1.3 mild-hybrid petrol, mostly low mileage from dealers. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "skoda|octavia|2016|diesel",
+    "make": "Skoda",
+    "model": "Octavia",
+    "year": 2016,
+    "fuel": "diesel",
+    "referenceValue": 9000,
+    "low": 6350,
+    "high": 17950,
+    "typicalKm": 220000,
+    "comparables": [
+      {
+        "title": "Skoda Octavia 1.6 TDI",
+        "askingPrice": 8950,
+        "year": 2016,
+        "odometerKm": 219000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Skoda/Octavia/2016"
+      },
+      {
+        "title": "Skoda Octavia 1.6 TDI",
+        "askingPrice": 7450,
+        "year": 2016,
+        "odometerKm": 268500,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Skoda/Octavia/2016"
+      },
+      {
+        "title": "Skoda Octavia estate 1.6 TDI",
+        "askingPrice": 7250,
+        "year": 2016,
+        "odometerKm": 276000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Skoda/Octavia/2016"
+      },
+      {
+        "title": "Skoda Octavia vRS 2.0 TDI",
+        "askingPrice": 12995,
+        "year": 2016,
+        "odometerKm": 215000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Skoda/Octavia/2016"
+      },
+      {
+        "title": "Skoda Octavia vRS 2.0 TDI",
+        "askingPrice": 14950,
+        "year": 2016,
+        "odometerKm": 188293,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Skoda/Octavia/2016"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Mostly high-mileage 1.6 TDIs. vRS models ask €13,000–15,000. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "skoda|octavia|2019|diesel",
+    "make": "Skoda",
+    "model": "Octavia",
+    "year": 2019,
+    "fuel": "diesel",
+    "referenceValue": 16000,
+    "low": 9750,
+    "high": 17995,
+    "typicalKm": 110000,
+    "comparables": [
+      {
+        "title": "Skoda Octavia 1.6 TDI",
+        "askingPrice": 15500,
+        "year": 2019,
+        "odometerKm": 122169,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Skoda/Octavia/2019"
+      },
+      {
+        "title": "Skoda Octavia 1.6 TDI",
+        "askingPrice": 17000,
+        "year": 2019,
+        "odometerKm": 99000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Skoda/Octavia/2019"
+      },
+      {
+        "title": "Skoda Octavia Soleil 1.6 TDI",
+        "askingPrice": 9750,
+        "year": 2019,
+        "odometerKm": 297700,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/skoda-octavia-2019/40573324"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "1.6 TDI is the usual engine. Very high mileage cars drop sharply. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "skoda|octavia|2022|diesel",
+    "make": "Skoda",
+    "model": "Octavia",
+    "year": 2022,
+    "fuel": "diesel",
+    "referenceValue": 26000,
+    "low": 19950,
+    "high": 29900,
+    "typicalKm": 100000,
+    "comparables": [
+      {
+        "title": "Skoda Octavia Style 2.0 TDI",
+        "askingPrice": 29900,
+        "year": 2022,
+        "odometerKm": 88000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Skoda/Octavia/2022"
+      },
+      {
+        "title": "Skoda Octavia 2.0 TDI",
+        "askingPrice": 27500,
+        "year": 2022,
+        "odometerKm": 96560,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Skoda/Octavia/2022"
+      },
+      {
+        "title": "Skoda Octavia Style 2.0 TDI",
+        "askingPrice": 24995,
+        "year": 2022,
+        "odometerKm": 109000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Skoda/Octavia/2022"
+      },
+      {
+        "title": "Skoda Octavia Combi Ambition 2.0 TDI",
+        "askingPrice": 19950,
+        "year": 2022,
+        "odometerKm": 173947,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Skoda/Octavia/2022"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "2.0 TDI Style and Ambition. Estates are common. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "toyota|corolla|2016|diesel",
+    "make": "Toyota",
+    "model": "Corolla",
+    "year": 2016,
+    "fuel": "diesel",
+    "referenceValue": 11500,
+    "low": 6800,
+    "high": 16950,
+    "typicalKm": 155000,
+    "comparables": [
+      {
+        "title": "Toyota Corolla 1.4 D4D Luna",
+        "askingPrice": 16950,
+        "year": 2016,
+        "odometerKm": 93866,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Corolla/2016"
+      },
+      {
+        "title": "Toyota Corolla 1.4 D-4D Luna",
+        "askingPrice": 13950,
+        "year": 2016,
+        "odometerKm": 120881,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Corolla/2016"
+      },
+      {
+        "title": "Toyota Corolla 1.4 D4D",
+        "askingPrice": 11995,
+        "year": 2016,
+        "odometerKm": 149587,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Corolla/2016"
+      },
+      {
+        "title": "Toyota Corolla 1.4 D-4D",
+        "askingPrice": 10900,
+        "year": 2016,
+        "odometerKm": 219000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Corolla/2016"
+      },
+      {
+        "title": "Toyota Corolla 1.4 Diesel Luna",
+        "askingPrice": 6800,
+        "year": 2016,
+        "odometerKm": 294952,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Corolla/2016"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Mostly 1.4 D-4D diesels. Luna trim and lower mileage fetch the most. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "toyota|corolla|2019|hybrid",
+    "make": "Toyota",
+    "model": "Corolla",
+    "year": 2019,
+    "fuel": "hybrid",
+    "referenceValue": 21500,
+    "low": 17730,
+    "high": 23444,
+    "typicalKm": 95000,
+    "comparables": [
+      {
+        "title": "Toyota Corolla Hybrid Luna hatchback",
+        "askingPrice": 22888,
+        "year": 2019,
+        "odometerKm": 98959,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Corolla/2019"
+      },
+      {
+        "title": "Toyota Corolla Hybrid Luna saloon",
+        "askingPrice": 23444,
+        "year": 2019,
+        "odometerKm": 105907,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Corolla/2019"
+      },
+      {
+        "title": "Toyota Corolla Hybrid",
+        "askingPrice": 17730,
+        "year": 2019,
+        "odometerKm": 87722,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Corolla/2019"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Hybrids dominate. Luna and saloon versions ask the most. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "toyota|corolla|2022|hybrid",
+    "make": "Toyota",
+    "model": "Corolla",
+    "year": 2022,
+    "fuel": "hybrid",
+    "referenceValue": 24000,
+    "low": 18950,
+    "high": 27899,
+    "typicalKm": 63000,
+    "comparables": [
+      {
+        "title": "Toyota Corolla Hybrid Luna hatchback",
+        "askingPrice": 25950,
+        "year": 2022,
+        "odometerKm": 43160,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Corolla/2022"
+      },
+      {
+        "title": "Toyota Corolla Hybrid Luna hatchback",
+        "askingPrice": 24880,
+        "year": 2022,
+        "odometerKm": 105980,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Corolla/2022"
+      },
+      {
+        "title": "Toyota Corolla Hybrid",
+        "askingPrice": 23995,
+        "year": 2022,
+        "odometerKm": 56232,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Corolla/2022"
+      },
+      {
+        "title": "Toyota Corolla Hybrid",
+        "askingPrice": 19900,
+        "year": 2022,
+        "odometerKm": 60691,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Corolla/2022"
+      },
+      {
+        "title": "Toyota Corolla Hybrid Estate",
+        "askingPrice": 27899,
+        "year": 2022,
+        "odometerKm": 64721,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Corolla/2022"
+      },
+      {
+        "title": "Toyota Corolla Hybrid Estate",
+        "askingPrice": 18950,
+        "year": 2022,
+        "odometerKm": 90988,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Corolla/2022"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Strong demand for hybrids keeps values high. Estates vary widely. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "toyota|yaris|2016|petrol",
+    "make": "Toyota",
+    "model": "Yaris",
+    "year": 2016,
+    "fuel": "petrol",
+    "referenceValue": 9300,
+    "low": 7999,
+    "high": 9950,
+    "typicalKm": 75000,
+    "comparables": [
+      {
+        "title": "Toyota Yaris 1.0",
+        "askingPrice": 9950,
+        "year": 2016,
+        "odometerKm": 96000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2016"
+      },
+      {
+        "title": "Toyota Yaris 1.0",
+        "askingPrice": 9500,
+        "year": 2016,
+        "odometerKm": 73186,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2016"
+      },
+      {
+        "title": "Toyota Yaris 1.0",
+        "askingPrice": 9950,
+        "year": 2016,
+        "odometerKm": 26800,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2016"
+      },
+      {
+        "title": "Toyota Yaris 1.3",
+        "askingPrice": 7999,
+        "year": 2016,
+        "odometerKm": 102380,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2016"
+      },
+      {
+        "title": "Toyota Yaris 1.0",
+        "askingPrice": 8300,
+        "year": 2016,
+        "odometerKm": 57599,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2016"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "1.0 petrols with low mileage. Yaris owners tend to drive less than average. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "toyota|yaris|2019|hybrid",
+    "make": "Toyota",
+    "model": "Yaris",
+    "year": 2019,
+    "fuel": "hybrid",
+    "referenceValue": 18300,
+    "low": 16995,
+    "high": 18950,
+    "typicalKm": 65000,
+    "comparables": [
+      {
+        "title": "Toyota Yaris 1.5 Hybrid",
+        "askingPrice": 16995,
+        "year": 2019,
+        "odometerKm": 68000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2019"
+      },
+      {
+        "title": "Toyota Yaris 1.5 Hybrid",
+        "askingPrice": 18750,
+        "year": 2019,
+        "odometerKm": 80304,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2019"
+      },
+      {
+        "title": "Toyota Yaris 1.5 Hybrid",
+        "askingPrice": 18950,
+        "year": 2019,
+        "odometerKm": 41829,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2019"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "1.5 hybrids ask about €2,000 more than the 1.0 petrols. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "toyota|yaris|2019|petrol",
+    "make": "Toyota",
+    "model": "Yaris",
+    "year": 2019,
+    "fuel": "petrol",
+    "referenceValue": 16400,
+    "low": 12950,
+    "high": 16945,
+    "typicalKm": 45000,
+    "comparables": [
+      {
+        "title": "Toyota Yaris 1.0",
+        "askingPrice": 16945,
+        "year": 2019,
+        "odometerKm": 45000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2019"
+      },
+      {
+        "title": "Toyota Yaris 1.0",
+        "askingPrice": 16444,
+        "year": 2019,
+        "odometerKm": 40616,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2019"
+      },
+      {
+        "title": "Toyota Yaris 1.0",
+        "askingPrice": 12950,
+        "year": 2019,
+        "odometerKm": 84000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2019"
+      }
+    ],
+    "confidence": "low",
+    "notes": "1.0 petrols. Low-mileage examples ask close to hybrid prices. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "toyota|yaris|2022|hybrid",
+    "make": "Toyota",
+    "model": "Yaris",
+    "year": 2022,
+    "fuel": "hybrid",
+    "referenceValue": 18500,
+    "low": 14950,
+    "high": 22495,
+    "typicalKm": 80000,
+    "comparables": [
+      {
+        "title": "Toyota Yaris Hybrid Luna",
+        "askingPrice": 22495,
+        "year": 2022,
+        "odometerKm": 48221,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2022"
+      },
+      {
+        "title": "Toyota Yaris Platinum Hybrid",
+        "askingPrice": 19995,
+        "year": 2022,
+        "odometerKm": 88000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2022"
+      },
+      {
+        "title": "Toyota Yaris 1.5 Hybrid",
+        "askingPrice": 18450,
+        "year": 2022,
+        "odometerKm": 29000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2022"
+      },
+      {
+        "title": "Toyota Yaris 1.5 Hybrid X",
+        "askingPrice": 18250,
+        "year": 2022,
+        "odometerKm": 88107,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2022"
+      },
+      {
+        "title": "Toyota Yaris 1.5 Hybrid",
+        "askingPrice": 17950,
+        "year": 2022,
+        "odometerKm": 87000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2022"
+      },
+      {
+        "title": "Toyota Yaris 1.5 Hybrid Luna auto",
+        "askingPrice": 14950,
+        "year": 2022,
+        "odometerKm": 76000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Toyota/Yaris/2022"
+      }
+    ],
+    "confidence": "high",
+    "notes": "Current-shape 1.5 hybrid. Luna and higher trims ask the most. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "volkswagen|golf|2016|diesel",
+    "make": "Volkswagen",
+    "model": "Golf",
+    "year": 2016,
+    "fuel": "diesel",
+    "referenceValue": 11500,
+    "low": 6495,
+    "high": 13850,
+    "typicalKm": 220000,
+    "comparables": [
+      {
+        "title": "VW Golf 1.6 TDI Highline",
+        "askingPrice": 13850,
+        "year": 2016,
+        "odometerKm": 179000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Golf/2016"
+      },
+      {
+        "title": "VW Golf 2.0 TDI GTD",
+        "askingPrice": 12950,
+        "year": 2016,
+        "odometerKm": 249448,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Golf/2016"
+      },
+      {
+        "title": "VW Golf 1.6 TDI Estate auto",
+        "askingPrice": 11750,
+        "year": 2016,
+        "odometerKm": 198455,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Golf/2016"
+      },
+      {
+        "title": "VW Golf 1.6 TDI BlueMotion",
+        "askingPrice": 6495,
+        "year": 2016,
+        "odometerKm": 279000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/2016-vw-golf-1-6-tdi/42849332"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Mostly high-mileage 1.6 TDIs. GTD and Highline trims hold value better. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "volkswagen|golf|2019|petrol",
+    "make": "Volkswagen",
+    "model": "Golf",
+    "year": 2019,
+    "fuel": "petrol",
+    "referenceValue": 17900,
+    "low": 11500,
+    "high": 18950,
+    "typicalKm": 70000,
+    "comparables": [
+      {
+        "title": "Volkswagen Golf Trendline 1.2 TSI",
+        "askingPrice": 18299,
+        "year": 2019,
+        "odometerKm": 63300,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/2019-volkswagen-golf/40680974"
+      },
+      {
+        "title": "Volkswagen Golf 1.2 TSI",
+        "askingPrice": 17495,
+        "year": 2019,
+        "odometerKm": 72338,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Golf/2019"
+      },
+      {
+        "title": "Volkswagen Golf 1.2 TSI",
+        "askingPrice": 17950,
+        "year": 2019,
+        "odometerKm": 89692,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Golf/2019"
+      },
+      {
+        "title": "Volkswagen Golf 1.6 TDI",
+        "askingPrice": 18000,
+        "year": 2019,
+        "odometerKm": 57000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Golf/2019"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "1.2 and 1.0 TSI petrols with modest mileage cluster around €17,500–18,300. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "volkswagen|golf|2022|diesel",
+    "make": "Volkswagen",
+    "model": "Golf",
+    "year": 2022,
+    "fuel": "diesel",
+    "referenceValue": 24500,
+    "low": 23500,
+    "high": 25995,
+    "typicalKm": 96000,
+    "comparables": [
+      {
+        "title": "Volkswagen Golf 2.0 TDI Life",
+        "askingPrice": 23995,
+        "year": 2022,
+        "odometerKm": 120701,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Golf/2022"
+      },
+      {
+        "title": "Volkswagen Golf 2.0 TDI",
+        "askingPrice": 24950,
+        "year": 2022,
+        "odometerKm": 97000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Golf/2022"
+      },
+      {
+        "title": "Volkswagen Golf 2.0 TDI 115HP Life",
+        "askingPrice": 25995,
+        "year": 2022,
+        "odometerKm": 95002,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Golf/2022"
+      },
+      {
+        "title": "Volkswagen Golf GTD 2.0",
+        "askingPrice": 23500,
+        "year": 2022,
+        "odometerKm": 55620,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Golf/2022"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "2.0 TDI Life models with around 100,000 km ask about €24,000–26,000. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "volkswagen|golf|2022|petrol",
+    "make": "Volkswagen",
+    "model": "Golf",
+    "year": 2022,
+    "fuel": "petrol",
+    "referenceValue": 27500,
+    "low": 24950,
+    "high": 31950,
+    "typicalKm": 45000,
+    "comparables": [
+      {
+        "title": "Volkswagen Golf R-Line 1.5 eTSI",
+        "askingPrice": 31950,
+        "year": 2022,
+        "odometerKm": 24482,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Golf/2022"
+      },
+      {
+        "title": "Volkswagen Golf 1.5 TSI hybrid",
+        "askingPrice": 27995,
+        "year": 2022,
+        "odometerKm": 32196,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Golf/2022"
+      },
+      {
+        "title": "Volkswagen Golf 1.5 petrol",
+        "askingPrice": 28500,
+        "year": 2022,
+        "odometerKm": 45900,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Golf/2022"
+      },
+      {
+        "title": "Volkswagen Golf Style 1.5 TSI",
+        "askingPrice": 24950,
+        "year": 2022,
+        "odometerKm": 67000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Golf/2022"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Mk8 1.5 TSI/eTSI. R-Line and GTI versions ask much more. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "volkswagen|polo|2016|petrol",
+    "make": "Volkswagen",
+    "model": "Polo",
+    "year": 2016,
+    "fuel": "petrol",
+    "referenceValue": 11500,
+    "low": 5500,
+    "high": 12950,
+    "typicalKm": 50000,
+    "comparables": [
+      {
+        "title": "VW Polo 1.2 TSI auto",
+        "askingPrice": 12950,
+        "year": 2016,
+        "odometerKm": 24955,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/volkswagen-polo-2016/40666178"
+      },
+      {
+        "title": "Volkswagen Polo 1.2",
+        "askingPrice": 11500,
+        "year": 2016,
+        "odometerKm": 49800,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Polo/2016"
+      },
+      {
+        "title": "Volkswagen Polo 1.0",
+        "askingPrice": 5500,
+        "year": 2016,
+        "odometerKm": 158449,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Polo/2016"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "Low-mileage 1.0 and 1.2 petrols. High-mileage cars drop sharply. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "volkswagen|polo|2019|petrol",
+    "make": "Volkswagen",
+    "model": "Polo",
+    "year": 2019,
+    "fuel": "petrol",
+    "referenceValue": 16000,
+    "low": 12300,
+    "high": 20950,
+    "typicalKm": 75000,
+    "comparables": [
+      {
+        "title": "Volkswagen Polo 1.0",
+        "askingPrice": 14750,
+        "year": 2019,
+        "odometerKm": 31000,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Polo/2019"
+      },
+      {
+        "title": "Volkswagen Polo Trendline 1.0",
+        "askingPrice": 12450,
+        "year": 2019,
+        "odometerKm": 156221,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Polo/2019"
+      },
+      {
+        "title": "Volkswagen Polo Trendline 1.0",
+        "askingPrice": 16950,
+        "year": 2019,
+        "odometerKm": 81700,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars-for-sale/volkswagen-polo-2019-1-0-5dr/39899108"
+      },
+      {
+        "title": "Volkswagen Polo Comfortline 1.0",
+        "askingPrice": 15950,
+        "year": 2019,
+        "odometerKm": 87248,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Polo/2019"
+      },
+      {
+        "title": "Volkswagen Polo 1.0 TSI auto",
+        "askingPrice": 15990,
+        "year": 2019,
+        "odometerKm": 66540,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Polo/2019"
+      },
+      {
+        "title": "VW Polo 1.0 TSI Highline",
+        "askingPrice": 17900,
+        "year": 2019,
+        "odometerKm": 44464,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Polo/2019"
+      }
+    ],
+    "confidence": "high",
+    "notes": "1.0 petrols, Trendline to Highline. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  },
+  {
+    "key": "volkswagen|polo|2022|petrol",
+    "make": "Volkswagen",
+    "model": "Polo",
+    "year": 2022,
+    "fuel": "petrol",
+    "referenceValue": 19000,
+    "low": 15450,
+    "high": 20950,
+    "typicalKm": 45000,
+    "comparables": [
+      {
+        "title": "Volkswagen Polo 1.0 TSI Comfortline auto",
+        "askingPrice": 20950,
+        "year": 2022,
+        "odometerKm": 32518,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Polo/2022"
+      },
+      {
+        "title": "VW Polo 1.0 Active auto",
+        "askingPrice": 20950,
+        "year": 2022,
+        "odometerKm": 22191,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Polo/2022"
+      },
+      {
+        "title": "Volkswagen Polo 1.0",
+        "askingPrice": 17945,
+        "year": 2022,
+        "odometerKm": 53758,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Polo/2022"
+      },
+      {
+        "title": "Volkswagen Polo 1.0",
+        "askingPrice": 15450,
+        "year": 2022,
+        "odometerKm": 91500,
+        "source": "DoneDeal",
+        "url": "https://www.donedeal.ie/cars/Volkswagen/Polo/2022"
+      }
+    ],
+    "confidence": "medium",
+    "notes": "1.0 petrols. Automatics ask about €21,000. Researched from DoneDeal search results on 28 September 2026.",
+    "updatedAt": "2026-09-28T12:00:00.000Z"
+  }
+]
