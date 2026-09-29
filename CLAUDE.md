@@ -18,7 +18,7 @@ Sign-up asks what Irish insurers ask before a quote. It's based on Aviva's publi
 
 - **About you:** name, email, phone, date of birth, county where the car is kept overnight, occupation
 - **Licence:** type, date obtained, penalty points
-- **History:** no claims bonus years, claims in the last 3 years, motoring convictions
+- **History:** no claims bonus years, years as a named driver on someone else's policy, claims in the last 3 years, motoring convictions
 - **Use:** km per year, use class, overnight parking, other drivers
 - **Cover:** comprehensive or third party, fire and theft; excess of €125, €300 or €600
 
@@ -28,12 +28,22 @@ Some insurer questions are left out because they don't vary much between marketp
 
 ### How quotes are priced
 
-Quotes are built in two layers:
+Quotes are built in two layers, and each shows a likely range across insurers as well as a central figure.
 
-1. **Rating model** (`lib/insurance.ts`): a multiplicative model, the same shape insurers use. The base is the average premium for the driver's age, scaled by their county. It then applies one multiplier for each factor: experience and NCD relative to what's typical for that age, penalty points, claims, convictions, occupation, mileage, use, parking, cover, excess, named drivers, engine size and car value. The age, county and experience averages come from the [Chill Car Insurance Pricing Index](https://www.chill.ie/blog/car-insurance-pricing-index/) (July 2026). The NCD and penalty point loadings follow published Irish ranges. The other multipliers are assumptions, marked in the code.
-2. **AI adjustment** (`lib/ai-quotes.ts`): one Claude Opus 5 call per user prices every car they haven't been quoted for yet. It is grounded in the rating model's figure and adjusts for things the model can't see: model-specific insurance group, theft risk, repair costs, imports, and how the car interacts with the driver. The server limits each price to between −25% and +30% of the rating model, and caches it per driver details and listing. Quotes start generating in the background at sign-up (`after()`), so browsing is usually instant.
+1. **Rating model** (`lib/insurance.ts`): built like an insurer's pricing model. Each driver's premium is split into expected claims by type (injury, third party damage, own damage, fire and theft, windscreen) plus costs, and each rating factor multiplies only the claim types it affects.
+   - **Sources:**
+     - Central Bank [NCID Report 7](https://www.centralbank.ie/statistics/data-and-analysis/national-claims-information-database/ncid-private-motor-insurance) (Oct 2025) and the mid-year 2025 release: average premium €655, 68% of it claims (€397 per policy, split by claim type), with expenses, commission, the MIBI levy, the 3% government levy and the 1% ICF levy making up the rest.
+     - [Chill Car Insurance Pricing Index](https://www.chill.ie/blog/car-insurance-pricing-index/) (July 2026): averages by age, county, years licensed, popular model and brand.
+     - Published Irish loadings for no claims bonus (NCB), penalty points, claims, learner permits and named-driver credit.
+   - **Driver:** a smooth age curve that averages to Chill's age bands, then county, then experience and NCB relative to what's typical for that age (dampened, because the two overlap). After that: named-driver years, licence type, points, claims, convictions, occupation, mileage, use and named drivers.
+   - **Car:** engine size, Chill's model or brand average (at half weight, since it also reflects who drives it), and car value (own damage and theft only). Cover and excess apply to own damage only, and parking to theft and damage.
+   - **Range:** ±15–20% around the figure, or 20–30% for young and new drivers. That's the typical gap between the cheapest and dearest insurer.
+   - Multipliers not backed by a source are marked "assumption" in the code.
+2. **AI adjustment** (`lib/ai-quotes.ts`): one Claude Opus 5 call per user prices every car they haven't been quoted for yet. It gets the market facts above and each car's rating-model factors, and adjusts only for what the model can't see: the car's insurance group, power and performance versions, repair and ADAS costs, theft risk, imports, safety kit, and how the car suits the driver. It can also flag cars many insurers would refuse to cover for that driver. The server limits each price to between −25% and +30% of the rating model, and caches it per driver details and listing. Quotes start generating in the background at sign-up (`after()`), so browsing is usually instant.
 
-Without `ANTHROPIC_API_KEY` in `.env.local`, or if the call fails, quotes fall back to the rating model on its own. The UI labels which one was used. Quotes are estimates, not binding offers from an insurer. Say so wherever a quote appears, and credit Chill.
+**Accuracy check:** `npm run check:quotes` (`scripts/check-quotes.ts`) compares the model with Chill's age-band averages and published example quotes (odo.ie, settle.ie, AA Ireland). All 8 Chill bands are within 5%. Where sites' estimates conflict with Chill's actual sales data, the model follows Chill; the one known miss is odo.ie's 20-year-old estimate. Rerun it after changing any multiplier.
+
+**These are estimates, not quotes.** A true, bookable quote can only come from an insurer's own rating engine, sold through a Central Bank-regulated insurer or broker. To show real prices, partner with a regulated broker or aggregator and call their quote API. Without `ANTHROPIC_API_KEY` in `.env.local`, or if the call fails, quotes fall back to the rating model on its own. The UI labels which one was used. Say "estimate" wherever a quote appears, and credit Chill and the Central Bank.
 
 ### Accounts
 
@@ -154,6 +164,7 @@ Set these in `.env.local` (ignored by git):
 - `npm run dev`: start the dev server at http://localhost:3000
 - `npm run build`: production build
 - `npm run lint`: run ESLint
+- `npm run check:quotes`: check the rating model against published Irish premium data
 
 ## Structure
 

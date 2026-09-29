@@ -10,6 +10,9 @@ import type { Listing } from "./listings";
 
 export type Quote = {
   premium: number;
+  // Likely spread of quotes across Irish insurers.
+  low: number;
+  high: number;
   ratingModelPremium: number;
   factors: Factor[];
   // Car-specific reasons from the AI, empty when the rating model was used on its own.
@@ -27,22 +30,35 @@ const QuotesSchema = z.object({
       listingId: z.string(),
       annualPremium: z.number(),
       reasons: z.array(z.string()),
+      // Many insurers would refuse to quote this driver for this car.
+      declineLikely: z.boolean(),
     }),
   ),
 });
 
-const SYSTEM_PROMPT = `You are a senior Irish private motor insurance underwriter. You price annual comprehensive or third party, fire and theft premiums in euro for drivers in the Republic of Ireland.
+const SYSTEM_PROMPT = `You are a senior Irish private motor insurance underwriter. You price annual comprehensive or third party, fire and theft premiums in euro for drivers in the Republic of Ireland, as the market would quote them in 2026.
 
-For every car you receive a baseline premium from a rating model. The rating model already prices the driver: age, county, licence experience, no claims bonus, penalty points, claims, convictions, occupation, mileage, usage, parking, cover, excess and named drivers. It prices the car only by engine size band and market value.
+How the Irish market prices (Central Bank of Ireland NCID Report 7, data to 2024; NCID mid-year 2025; Chill Car Insurance Pricing Index, July 2026):
+- Average premium €655 (H1 2025); comprehensive €648. 93% of policies are comprehensive.
+- About 68% of a premium is expected claims (€397 per policy in 2024): injury €205, third party damage €70, accidental (own) damage €100, fire and theft €12, windscreen €10. The rest is administration and claims handling (~23%), broker commission (~13% where sold through brokers), the MIBI levy (~3.6%), the 3% government levy, the 1% ICF levy, and a thin profit (~4–5%).
+- Injury claims dominate and are driven by the driver: age, experience and history. Car value and repair cost drive own damage and theft only.
+- Damage claim costs are rising fast (average damage claim +18% in 2024) because of parts, labour and ADAS sensor calibration, so cars that are expensive or slow to repair cost more to insure.
+- Chill average premiums by model: Hyundai Tucson €569, Nissan Qashqai €584, Skoda Octavia €585, Toyota Corolla €602, Toyota Yaris €608, Ford Fiesta €636, Ford Focus €659, VW Passat €683, VW Golf €725, BMW 3 Series €783. EVs such as the Kia Niro EV (€447) and Nissan Leaf (€489) are among the cheapest.
 
-Your job is to adjust each baseline for what the rating model cannot see about the specific car and how it interacts with this driver:
-- insurance group, performance and power output of that make and model
-- theft and break-in risk, and how sought-after its parts are
-- repair costs, parts availability and whether it is an import (for example US-spec cars)
-- safety equipment typical for that model and year
-- interactions, such as a powerful car with a young or inexperienced driver
+For every car you receive a baseline premium from a rating model. It already prices the driver (age curve, county, licence years and named-driver experience, no claims bonus, penalty points, claims, convictions, licence type, occupation, mileage, use, parking, named drivers), cover and excess, engine size band, car value, and the model averages above at half weight. Its factors are listed with each car.
 
-Stay within 25% below or 30% above the baseline. Most adjustments should be under 10%. Give one to three short reasons per car (under 12 words each), written for the buyer, about the car rather than restating the driver's details. Return one quote for every listingId you are given.`;
+Adjust each baseline only for what the rating model can't see about the specific car and how it fits this driver:
+- the car's insurance group: power output, performance versions, repair cost, parts prices and availability, ADAS repair costs
+- theft and break-in risk for that model in Ireland (keyless models, sought-after parts)
+- imports (e.g. US-spec or grey imports): harder to repair and value, often loaded or declined
+- safety equipment typical for that model and year (autonomous emergency braking lowers accident claims)
+- interactions: a powerful or high-group car with a young or newly licensed driver is loaded heavily, and many insurers refuse to quote under-25s on high-performance cars
+
+Rules:
+- Stay within 25% below and 30% above the baseline. Most adjustments are under 10%; don't re-price factors the baseline already covers.
+- Set declineLikely to true only when many Irish insurers would refuse to quote this driver for this car.
+- Give one to three short reasons per car (under 12 words each), written for the buyer, about the car rather than restating the driver's details.
+- Return one quote for every listingId you are given.`;
 
 const cache = new Map<string, Quote>();
 const inFlight = new Map<string, Promise<void>>();
@@ -62,6 +78,7 @@ function describeDriver(driver: DriverDetails) {
     `Occupation: ${OCCUPATIONS[driver.occupation]}`,
     `Licence: ${LICENCE_TYPES[driver.licenceType]}, held ${yearsSince(driver.licenceDate)} years`,
     `No claims bonus: ${driver.noClaimsYears} years`,
+    `Named driver experience on another policy: ${driver.namedDriverYears} years`,
     `Penalty points: ${driver.penaltyPoints}`,
     `Claims in last 3 years: ${driver.claimsLast3Years === 2 ? "2 or more" : driver.claimsLast3Years}`,
     `Motoring convictions or disqualification: ${driver.convictions ? "yes" : "no"}`,
@@ -77,6 +94,8 @@ function ratingModelQuote(driver: DriverDetails, listing: Listing): Quote {
   const rated = rateQuote(driver, listing);
   return {
     premium: rated.premium,
+    low: rated.low,
+    high: rated.high,
     ratingModelPremium: rated.premium,
     factors: rated.factors,
     notes: [],
@@ -90,13 +109,19 @@ async function priceWithAI(driver: DriverDetails, listings: Listing[], driverHas
 
   if (anthropic) {
     try {
-      const cars = listings.map((listing) => ({
-        listingId: listing.id,
-        car: `${listing.year} ${listing.make} ${listing.model}, ${listing.engineSizeLitres.toFixed(1)}L petrol`,
-        marketValue: listing.price,
-        odometerKm: listing.odometerKm,
-        baselinePremium: Math.round(rated.get(listing.id)!.premium),
-      }));
+      const cars = listings.map((listing) => {
+        const quote = rated.get(listing.id)!;
+        return {
+          listingId: listing.id,
+          car: `${listing.year} ${listing.make} ${listing.model}, ${listing.engineSizeLitres.toFixed(1)}L petrol`,
+          marketValue: listing.price,
+          odometerKm: listing.odometerKm,
+          baselinePremium: Math.round(quote.premium),
+          baselineFactors: quote.factors.map(
+            (factor) => `${factor.label}: ${factor.multiplier >= 1 ? "+" : ""}${Math.round((factor.multiplier - 1) * 100)}%`,
+          ),
+        };
+      });
 
       const response = await anthropic.beta.messages.parse({
         model: "claude-opus-5",
@@ -125,10 +150,15 @@ async function priceWithAI(driver: DriverDetails, listings: Listing[], driverHas
           quote.ratingModelPremium * MAX_ADJUSTMENT,
           Math.max(quote.ratingModelPremium * MIN_ADJUSTMENT, aiQuote.annualPremium),
         );
+        const scale = premium / quote.ratingModelPremium;
+        const notes = aiQuote.reasons.slice(0, 3);
+        if (aiQuote.declineLikely) notes.unshift("Many insurers may refuse to quote you for this car.");
         rated.set(aiQuote.listingId, {
           ...quote,
           premium,
-          notes: aiQuote.reasons.slice(0, 3),
+          low: quote.low * scale,
+          high: quote.high * scale,
+          notes,
           source: "ai",
         });
       }

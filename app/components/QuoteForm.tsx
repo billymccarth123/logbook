@@ -137,6 +137,19 @@ export function QuoteForm({ profile, returnTo = "/cars", submitLabel, action: cu
             className={inputClass}
           />
         </label>
+        <label className={labelClass}>
+          Years as a named driver on someone else&apos;s policy
+          <input
+            name="namedDriverYears"
+            type="number"
+            required
+            min={0}
+            max={30}
+            defaultValue={profile?.namedDriverYears ?? 0}
+            className={inputClass}
+          />
+          <span className="mt-1 block text-xs font-normal text-zinc-500">For example on a parent&apos;s policy. 0 if none.</span>
+        </label>
         <Select
           name="claimsLast3Years"
           label="Claims or accidents in the last 3 years"

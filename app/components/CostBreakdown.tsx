@@ -75,7 +75,8 @@ export function CostBreakdown({ engineSizeLitres, year, quote, initialKm = DEFAU
               <div>
                 <dt className="font-medium">Insurance</dt>
                 <dd className="text-xs text-zinc-500 dark:text-zinc-400">
-                  {quote.source === "ai" ? "Your AI-priced quote" : "Your estimated quote"}
+                  {quote.source === "ai" ? "Your AI-priced estimate" : "Your estimate"} · likely{" "}
+                  {formatEuro(quote.low)}–{formatEuro(quote.high)} across insurers
                 </dd>
               </div>
               <dd className="font-semibold tabular-nums">{formatEuro(quote.premium)}</dd>
@@ -139,6 +140,15 @@ export function CostBreakdown({ engineSizeLitres, year, quote, initialKm = DEFAU
             rel="noreferrer"
           >
             Chill Car Insurance Pricing Index
+          </a>
+          ; claims costs and premium structure from the{" "}
+          <a
+            href="https://www.centralbank.ie/statistics/data-and-analysis/national-claims-information-database/ncid-private-motor-insurance"
+            className="underline"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Central Bank&apos;s National Claims Information Database
           </a>
           .
         </p>

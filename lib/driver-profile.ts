@@ -69,6 +69,9 @@ export type DriverDetails = {
   licenceDate: string;
   penaltyPoints: number;
   noClaimsYears: number;
+  // Years driving as a named driver on someone else's policy. Insurers give
+  // credit for it (up to ~55%), which matters most before you earn NCD.
+  namedDriverYears: number;
   claimsLast3Years: number;
   convictions: boolean;
   annualKm: number;
@@ -119,6 +122,8 @@ export function parseProfile(get: (key: string) => string): { error: string } | 
   const licenceDate = get("licenceDate");
   const penaltyPoints = Number(get("penaltyPoints"));
   const noClaimsYears = Number(get("noClaimsYears"));
+  // Blank counts as 0, so accounts made before this question existed still load.
+  const namedDriverYears = Number(get("namedDriverYears") || 0);
   const claimsLast3Years = Number(get("claimsLast3Years"));
   const annualKm = Number(get("annualKm"));
   const usage = get("usage");
@@ -150,6 +155,9 @@ export function parseProfile(get: (key: string) => string): { error: string } | 
   if (noClaimsYears > yearsSince(licenceDate) + 1) {
     return { error: "No claims years can't be more than the years you've held a licence." };
   }
+  if (!(Number.isInteger(namedDriverYears) && namedDriverYears >= 0 && namedDriverYears <= 30)) {
+    return { error: "Enter your years as a named driver (0 if none)." };
+  }
   if (![0, 1, 2].includes(claimsLast3Years)) return { error: "Choose how many claims you've made." };
   if (!(annualKm >= 1000 && annualKm <= 100_000)) return { error: "Yearly km should be between 1,000 and 100,000." };
   if (!oneOf(USAGE, usage)) return { error: "Choose how you'll use the car." };
@@ -170,6 +178,7 @@ export function parseProfile(get: (key: string) => string): { error: string } | 
       licenceDate,
       penaltyPoints,
       noClaimsYears,
+      namedDriverYears,
       claimsLast3Years,
       convictions: get("convictions") === "yes",
       annualKm,

@@ -8,9 +8,9 @@ export const PETROL_PRICE_PER_LITRE = 1.75;
 export const NCT_FEE = 55;
 
 export const ENGINE_BANDS = [
-  { label: "up to 1.0L", maxLitres: 1.0, litresPer100Km: 5.0, insuranceMultiplier: 0.85 },
-  { label: "1.1–1.4L", maxLitres: 1.4, litresPer100Km: 5.8, insuranceMultiplier: 0.95 },
-  { label: "1.5–1.8L", maxLitres: 1.8, litresPer100Km: 6.8, insuranceMultiplier: 1.0 },
+  { label: "up to 1.0L", maxLitres: 1.0, litresPer100Km: 5.0, insuranceMultiplier: 0.9 },
+  { label: "1.1–1.4L", maxLitres: 1.4, litresPer100Km: 5.8, insuranceMultiplier: 1.0 },
+  { label: "1.5–1.8L", maxLitres: 1.8, litresPer100Km: 6.8, insuranceMultiplier: 1.04 },
   { label: "1.9–2.4L", maxLitres: 2.4, litresPer100Km: 8.0, insuranceMultiplier: 1.15 },
   { label: "2.5–3.0L", maxLitres: 3.0, litresPer100Km: 9.5, insuranceMultiplier: 1.4 },
   { label: "over 3.0L", maxLitres: Infinity, litresPer100Km: 12.0, insuranceMultiplier: 1.8 },
