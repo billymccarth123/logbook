@@ -1,29 +1,38 @@
 import Image from "next/image";
 import { PHOTOS } from "@/lib/photos";
 
-const GRADIENTS = [
-  "from-emerald-500 to-teal-700",
-  "from-sky-500 to-indigo-700",
-  "from-amber-400 to-orange-600",
-  "from-rose-400 to-fuchsia-700",
-  "from-slate-500 to-slate-800",
-];
+// photoUrl is the seller's uploaded photo; demo listings use the credited photos instead.
+type Props = { id: string; make: string; model: string; photoUrl?: string | null; large?: boolean };
 
-type Props = { id: string; make: string; model: string; large?: boolean };
-
-export function CarImage({ id, make, model, large = false }: Props) {
+export function CarImage({ id, make, model, photoUrl, large = false }: Props) {
   const photo = PHOTOS[id];
-  const frame = large ? "aspect-video rounded-2xl" : "aspect-4/3";
+  const frame = `relative overflow-hidden bg-zinc-100 dark:bg-zinc-900 ${large ? "aspect-video rounded-2xl" : "aspect-4/3 rounded-xl"}`;
+
+  if (photoUrl) {
+    return (
+      <div className={frame}>
+        {/* Already resized when uploaded, so it's served as is. */}
+        <Image
+          src={photoUrl}
+          alt={`${make} ${model}`}
+          fill
+          unoptimized
+          className="object-cover transition duration-300 group-hover:scale-[1.03]"
+          priority={large}
+        />
+      </div>
+    );
+  }
 
   if (photo) {
     return (
-      <div className={`relative overflow-hidden bg-zinc-200 dark:bg-zinc-800 ${frame}`}>
+      <div className={frame}>
         <Image
           src={photo.src}
           alt={`${make} ${model}`}
           fill
-          sizes={large ? "(min-width: 1024px) 700px, 100vw" : "(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"}
-          className="object-cover"
+          sizes={large ? "(min-width: 1024px) 800px, 100vw" : "(min-width: 1024px) 300px, 50vw"}
+          className="object-cover transition duration-300 group-hover:scale-[1.03]"
           priority={large}
         />
       </div>
@@ -31,20 +40,17 @@ export function CarImage({ id, make, model, large = false }: Props) {
   }
 
   // Placeholder for listings without a photo.
-  const gradient = GRADIENTS[Number(id) % GRADIENTS.length] ?? GRADIENTS[0];
   return (
-    <div className={`flex items-end bg-linear-to-br ${gradient} ${frame} ${large ? "p-6" : "p-4"}`}>
-      <div className="text-white">
-        <div className={`font-bold ${large ? "text-4xl" : "text-xl"}`}>{make}</div>
-        <div className={large ? "text-xl opacity-90" : "text-sm opacity-90"}>{model}</div>
-      </div>
+    <div className={`${frame} flex flex-col items-center justify-center text-center text-zinc-400 dark:text-zinc-600`}>
+      <span className={`font-semibold ${large ? "text-3xl" : "text-base"}`}>{make}</span>
+      <span className={large ? "text-lg" : "text-xs"}>{model}</span>
     </div>
   );
 }
 
-export function PhotoCredit({ id }: { id: string }) {
+export function PhotoCredit({ id, photoUrl }: { id: string; photoUrl?: string | null }) {
   const photo = PHOTOS[id];
-  if (!photo) return null;
+  if (!photo || photoUrl) return null;
   return (
     <p className="text-xs text-zinc-500">
       Photo: {photo.author},{" "}

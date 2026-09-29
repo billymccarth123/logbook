@@ -43,8 +43,13 @@ Real accounts are stored in SQLite using Node's built-in driver (`node:sqlite`),
 - **Log in and out** (`/login`, the Log out button on `/profile`): sessions last 30 days. The cookie holds a random token, and the database stores only its SHA-256 hash. After 5 failed logins an email is locked for 15 minutes (in memory).
 - **Passwords:** hashed with scrypt, using a salt per user. Changing a password on `/profile` signs out every other device.
 - **Selling** (`/sell`) requires an account. Browsing and valuations don't.
-- **Admins:** anyone whose email is in `ADMIN_EMAILS` becomes an admin when they sign up or log in. Admins can also make other users admins. `/admin` shows user stats, search, suspend and reactivate, make and remove admin, delete (with confirmation), and a CSV download at `/admin/users.csv`. Non-admins get a 404. Admins can't change their own account there, so there's always at least one admin.
-- **Code:** `lib/db.ts` (schema and connection), `lib/auth.ts` (passwords, sessions, users, admin queries), `app/actions.ts` (sign up, log in, update details, change password), `app/admin/`.
+- **Admins:** anyone whose email is in `ADMIN_EMAILS` becomes an admin when they sign up or log in. Admins can also make other users admins. Non-admins get a 404 on every admin page, and every admin action re-checks the role.
+  - `/admin`: stats, users searchable by name, email or phone, quick actions, and a CSV download at `/admin/users.csv`.
+  - `/admin/users/[id]`: all of a user's personal and quote details, their listings, and controls to edit every detail, set a new password (signs them out everywhere), sign them out everywhere, suspend and reactivate, make and remove admin, and delete (also deletes their listings).
+  - `/admin/listings`: every listing with its seller. `/admin/listings/[id]` edits any field, or moves the listing to another account by seller email.
+  - Admins can edit their own details but can't suspend, demote, delete or reset the password of their own account there, so there's always at least one admin.
+- **Code:** `lib/db.ts` (schema and connection), `lib/auth.ts` (passwords, sessions, users, admin queries), `app/actions.ts` (sign up, log in, update details, change password, create listing), `app/admin/`.
+- **Listings** are in the same database (`listings` table, `seller_id` links to `users`). The 12 demo listings are added once when the table is first created and have no seller.
 
 Not built yet: password reset and email verification. Both need an email service, e.g. Resend or Postmark. Before deploying, move from SQLite to a hosted database such as Postgres, because a single file doesn't survive serverless hosting or multiple servers.
 
@@ -80,6 +85,26 @@ Researched so far (28 September 2026): Toyota Corolla, Yaris; Volkswagen Golf, P
 
 With an API key, the same research can run automatically: `POST /api/market/refresh?limit=5&from=2016&to=2024` with `Authorization: Bearer $MARKET_REFRESH_TOKEN`. Each entry is one paid Claude call, so run it in small chunks.
 
+### AI search
+
+`/search` lets buyers describe what they want in their own words, e.g. "a blue car for €15,000" (`lib/ai-search.ts`). The header and home page search boxes go there.
+
+- **With** `ANTHROPIC_API_KEY`: one Claude Opus 5 call (low effort) reads every listing, with its colour, price, km, county, seller's description and this viewer's yearly running cost. It returns the matches best first, each with a one-line reason, plus up to 3 close alternatives when there are fewer than 3 matches. Only real listing IDs are kept. Seller descriptions are treated as data, never instructions. Results are cached per query and listing data, and each visitor gets 10 AI searches per 10 minutes.
+- **Without** a key, when rate-limited, or if the call fails: a keyword parser picks out price ("€15k", "under 12,000 euro"), mileage, year, colour (navy = blue), make or model, and county. Cars that miss exactly one requirement are shown as close matches.
+- The page labels which one was used. Every listing is sent in one call, which is fine for hundreds of listings; with thousands, pre-filter with the keyword parser first.
+
+Listings have a `colour` (`lib/colours.ts`), chosen on `/sell` and filterable on `/cars`. The demo cars' colours match their photos.
+
+### Messages
+
+Buyers and sellers chat in the site (`lib/messages.ts`, `app/messages/`). There's one conversation per listing and buyer, and both people need an account.
+
+- **Starting:** the listing page shows who's selling and a **Message seller** box with quick replies ("Is this still available?"). Logged-out visitors get a log-in link, sellers get a link to their messages, and demo listings (no seller) can't be messaged. Contact details are never shown; people talk through the site.
+- **Chatting:** `/messages` is the inbox, and `/messages/[id]` is the chat (the inbox sits beside it on a laptop). Sent messages show instantly, the page checks for new ones every 4 seconds while the tab is open, and Enter sends (Shift+Enter for a new line).
+- **Unread:** each side's read time is stored on the conversation. The header shows how many conversations have unread messages. The chat marks messages read once they're on screen.
+- **Limits:** messages up to 2,000 characters, and 20 messages a minute per account (in memory).
+- Deleting a listing or either account deletes the conversation. There are no email or text notifications yet, because that needs an email or SMS service.
+
 ### Photos
 
 `public/cars/<id>.jpg` holds freely licensed Wikimedia Commons photos (CC BY-SA). Each needs its author and licence shown. The credits live in `lib/photos.ts` and appear on the listing page. They're illustrative, not the actual car. Listings without a photo get a coloured placeholder.
@@ -88,12 +113,15 @@ With an API key, the same research can run automatically: `POST /api/market/refr
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Hero, how costs are worked out, three cheapest cars to run |
-| `/cars` | Browse with filters and sorting (state lives in search params), sign-up banner when logged out |
+| `/` | Search and make shortcuts, "Cheapest to run" and "Just listed" rows, how costs are worked out |
+| `/search` | AI search: describe the car you want (`?q=`), get matches with reasons and close alternatives |
+| `/cars` | Browse with keyword search (`?q=`), filter sidebar (including colour), sort chips and removable filter chips (state lives in search params) |
 | `/cars/[id]` | Photo, specs, cost breakdown, and quote with "How we priced this" |
 | `/sell` | Create-listing form with a petrol and NCT preview |
 | `/value` | Car valuation form and result, with a "List it at €X" link that fills in `/sell` |
 | `/values` | Market database: typical price by model and year, searchable |
+| `/messages` | Inbox of conversations with buyers and sellers, with unread counts |
+| `/messages/[id]` | Chat with a buyer or seller about one car |
 | `/signup` | Create an account with quote details, then return to the page that sent the user there (`?returnTo=`) |
 | `/login` | Log in, then return to `?returnTo=` |
 | `/profile` | Edit quote details (quotes are recalculated), change password, log out |
@@ -102,8 +130,8 @@ With an API key, the same research can run automatically: `POST /api/market/refr
 ### Later
 
 - Password reset and email verification (needs an email service)
-- A hosted database for users and listings (listings are still in memory)
-- Photo uploads for sellers
+- A hosted database for users and listings (both are in SQLite for now)
+- Email or text notifications for new messages
 - Diesel, hybrid and EV fuel costs, and motor tax
 - Calibrating the rating model against real quotes from an insurer or broker partner
 
@@ -117,7 +145,7 @@ With an API key, the same research can run automatically: `POST /api/market/refr
 
 Set these in `.env.local` (ignored by git):
 
-- `ANTHROPIC_API_KEY` (optional): turns on live AI quotes and live market research. Without it, quotes use the rating model, and valuations use the market database (kept up to date by Claude Code, see above).
+- `ANTHROPIC_API_KEY` (optional): turns on live AI quotes, AI search and live market research. Without it, quotes use the rating model, search uses keywords, and valuations use the market database (kept up to date by Claude Code, see above).
 - `ADMIN_EMAILS`: comma-separated emails that become admins when they sign up or log in.
 - `MARKET_REFRESH_TOKEN`: any long random string, needed to call the bulk refresh endpoint.
 
@@ -137,7 +165,11 @@ Set these in `.env.local` (ignored by git):
 - `lib/driver-profile.ts`: quote questions, their options, and validation (pure)
 - `lib/insurance.ts`: the rating model (pure)
 - `lib/ai-quotes.ts`: the Claude pricing layer, cache and fallback (server only)
-- `lib/listings.ts`: mock listings stored in memory, so new listings disappear when the server restarts
+- `lib/ai-search.ts`: AI search over every listing, keyword fallback, cache and rate limit (server only)
+- `lib/colours.ts`: car colours (pure)
+- `lib/messages.ts`: buyer and seller conversations, unread counts and a send rate limit (server only)
+- `app/messages/`: inbox, chat, the "Message seller" box and their actions
+- `lib/listings.ts`: listings in SQLite (seeded with demo cars), validation, and admin queries
 - `lib/photos.ts`: photo credits
 - `lib/valuation.ts`: valuation options, validation and adjustments (pure)
 - `lib/ai-valuation.ts`: market research with Claude web search (server only)
@@ -148,7 +180,7 @@ Set these in `.env.local` (ignored by git):
 - `lib/profile.ts`: the signed-in user's quote details
 - `lib/db.ts`, `lib/auth.ts`: accounts database, passwords, sessions, admin queries
 - `lib/password-rules.ts`: password length rule shared with the form
-- `app/admin/`: admin page, actions and CSV export
+- `app/admin/`: users, user detail, listings and listing editor pages, actions, shared UI and CSV export
 - `public/`: static assets
 - Import alias: `@/*` maps to the repo root
 

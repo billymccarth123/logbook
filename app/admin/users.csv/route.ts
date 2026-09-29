@@ -18,7 +18,7 @@ export async function GET() {
   const rows = listUsers().map((user) => {
     const p = user.profile;
     return [
-      user.name, user.email, p?.phone, user.role, user.status, user.createdAt, user.lastLoginAt,
+      user.name, user.email, user.phone, user.role, user.status, user.createdAt, user.lastLoginAt,
       p && ageFromDob(p.dateOfBirth), p?.county, p && OCCUPATIONS[p.occupation], p && LICENCE_TYPES[p.licenceType],
       p?.noClaimsYears, p?.penaltyPoints, p?.annualKm, p && COVER[p.cover],
     ];

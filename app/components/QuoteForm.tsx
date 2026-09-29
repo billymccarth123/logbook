@@ -49,19 +49,27 @@ function Select({ name, label, options, defaultValue }: {
   );
 }
 
-// With a profile it edits an existing account; without one it creates an account.
-type Props = { profile?: Profile; returnTo?: string; submitLabel: string };
+type FormAction = (state: FormState, formData: FormData) => Promise<FormState>;
 
-export function QuoteForm({ profile, returnTo = "/cars", submitLabel }: Props) {
-  const [state, action, pending] = useActionState<FormState, FormData>(profile ? updateQuoteDetails : signUp, {});
+// With a profile it edits the signed-in account; without one it creates an account.
+// Admins pass their own action and the userId of the account they're editing.
+type Props = { profile?: Profile; returnTo?: string; submitLabel: string; action?: FormAction; userId?: string };
+
+export function QuoteForm({ profile, returnTo = "/cars", submitLabel, action: customAction, userId }: Props) {
+  const creating = !profile && !customAction;
+  const [state, action, pending] = useActionState<FormState, FormData>(
+    customAction ?? (profile ? updateQuoteDetails : signUp),
+    {},
+  );
   const counties = Object.fromEntries(COUNTIES.map((county) => [county, county]));
   const excess = Object.fromEntries(EXCESS.map((amount) => [amount, `€${amount}`]));
 
   return (
     <form action={action} className="space-y-6">
       <input type="hidden" name="returnTo" value={returnTo} />
+      {userId && <input type="hidden" name="userId" value={userId} />}
 
-      <Section title={profile ? "About you" : "Your account"}>
+      <Section title={creating ? "Your account" : "About you"}>
         <label className={labelClass}>
           Full name
           <input name="name" required autoComplete="name" defaultValue={profile?.name} className={inputClass} />
@@ -70,7 +78,7 @@ export function QuoteForm({ profile, returnTo = "/cars", submitLabel }: Props) {
           Email
           <input name="email" type="email" required autoComplete="email" defaultValue={profile?.email} className={inputClass} />
         </label>
-        {!profile && (
+        {creating && (
           <label className={labelClass}>
             Password
             <input
@@ -174,6 +182,11 @@ export function QuoteForm({ profile, returnTo = "/cars", submitLabel }: Props) {
       {state.error && (
         <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950/50 dark:text-red-300">
           {state.error}
+        </p>
+      )}
+      {state.message && (
+        <p role="status" className="rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300">
+          {state.message}
         </p>
       )}
       <button disabled={pending} className={`${buttonClass} w-full`}>

@@ -41,8 +41,8 @@ export function CostBreakdown({ engineSizeLitres, year, quote, initialKm = DEFAU
   ];
 
   return (
-    <section className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-      <h2 className="text-lg font-semibold">Yearly running costs</h2>
+    <section className="rounded-2xl border border-zinc-200 p-5 dark:border-zinc-800">
+      <h2 className="font-semibold">Yearly running costs</h2>
 
       <label className="mt-4 block text-sm text-zinc-600 dark:text-zinc-400">
         Kilometres per year:{" "}

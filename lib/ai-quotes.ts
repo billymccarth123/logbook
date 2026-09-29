@@ -52,7 +52,7 @@ function driverKey(driver: DriverDetails) {
 }
 
 function cacheKey(driverHash: string, listing: Listing) {
-  return `${driverHash}:${listing.id}:${listing.year}:${listing.engineSizeLitres}:${listing.price}`;
+  return `${driverHash}:${listing.id}:${listing.make}:${listing.model}:${listing.year}:${listing.engineSizeLitres}:${listing.price}`;
 }
 
 function describeDriver(driver: DriverDetails) {

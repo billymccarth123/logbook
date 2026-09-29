@@ -3,44 +3,53 @@ import { Suspense } from "react";
 import { getQuotes } from "@/lib/ai-quotes";
 import { fixedRunningCosts } from "@/lib/costs";
 import { driverDetails } from "@/lib/driver-profile";
-import { getListings } from "@/lib/listings";
+import { getListings, getMakes } from "@/lib/listings";
 import { getProfile } from "@/lib/profile";
-import { ListingCard } from "./components/ListingCard";
+import { ListingCard, ListingGridSkeleton, listingGrid } from "./components/ListingCard";
 
 const STEPS = [
-  {
-    title: "Petrol",
-    body: "Worked out from the engine size and how far you drive in a year.",
-  },
-  {
-    title: "NCT",
-    body: "Based on the car's age: none until year 4, every 2 years until 10, then every year.",
-  },
-  {
-    title: "Insurance",
-    body: "Answer an insurer's questions once, and every car gets a quote priced for you.",
-  },
+  { title: "Petrol", body: "From the engine size and how far you drive in a year." },
+  { title: "NCT", body: "From the car's age: none until year 4, every 2 years until 10, then yearly." },
+  { title: "Insurance", body: "Answer an insurer's questions once and every car gets a quote priced for you." },
 ];
 
-async function Featured() {
+async function Rows() {
   const profile = await getProfile();
   const listings = getListings();
   const quotes = profile ? await getQuotes(driverDetails(profile), listings) : null;
-  const featured = listings
-    .map((listing) => {
-      const quote = quotes?.get(listing.id) ?? null;
-      return { listing, quote, yearly: fixedRunningCosts(listing, profile?.annualKm).total + (quote?.premium ?? 0) };
-    })
-    .sort((a, b) => a.yearly - b.yearly)
-    .slice(0, 3);
+  const rows = listings.map((listing) => {
+    const quote = quotes?.get(listing.id) ?? null;
+    return { listing, quote, yearly: fixedRunningCosts(listing, profile?.annualKm).total + (quote?.premium ?? 0) };
+  });
 
-  return (
-    <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {featured.map(({ listing, quote }) => (
-        <ListingCard key={listing.id} listing={listing} quote={quote} annualKm={profile?.annualKm} />
-      ))}
-    </div>
-  );
+  const sections = [
+    {
+      title: profile ? "Cheapest for you to run" : "Cheapest to run",
+      href: "/cars?sort=cost-asc",
+      items: [...rows].sort((a, b) => a.yearly - b.yearly).slice(0, 4),
+    },
+    {
+      title: "Just listed",
+      href: "/cars?sort=newest",
+      items: [...rows].sort((a, b) => b.listing.createdAt.localeCompare(a.listing.createdAt)).slice(0, 4),
+    },
+  ];
+
+  return sections.map((section) => (
+    <section key={section.title} className="mx-auto w-full max-w-7xl px-4 py-8">
+      <div className="mb-4 flex items-baseline justify-between">
+        <h2 className="text-xl font-semibold tracking-tight">{section.title}</h2>
+        <Link href={section.href} className="text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
+          See all
+        </Link>
+      </div>
+      <div className={listingGrid}>
+        {section.items.map(({ listing, quote }) => (
+          <ListingCard key={listing.id} listing={listing} quote={quote} annualKm={profile?.annualKm} />
+        ))}
+      </div>
+    </section>
+  ));
 }
 
 export default async function Home() {
@@ -48,54 +57,68 @@ export default async function Home() {
 
   return (
     <>
-      <section className="bg-linear-to-b from-emerald-50 to-transparent px-4 py-20 text-center dark:from-emerald-950/40">
-        <h1 className="mx-auto max-w-3xl text-5xl font-bold tracking-tight sm:text-6xl">
-          Know what a car really costs <span className="text-emerald-600">before</span> you buy it
+      <section className="mx-auto w-full max-w-7xl px-4 pt-12 pb-6 sm:pt-20">
+        <h1 className="max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl">
+          Cars for sale in Ireland, <span className="text-zinc-400 dark:text-zinc-500">with what they really cost to run.</span>
         </h1>
-        <p className="mx-auto mt-6 max-w-xl text-lg text-zinc-600 dark:text-zinc-400">
-          Every car on TRUCOST shows its yearly petrol, NCT and insurance costs, with an insurance quote priced for
-          you.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link
-            href={profile ? "/cars" : "/signup"}
-            className="rounded-full bg-emerald-600 px-6 py-3 font-medium text-white hover:bg-emerald-700"
-          >
-            {profile ? "Browse cars" : "Get my quotes"}
-          </Link>
-          <Link
-            href={profile ? "/sell" : "/cars"}
-            className="rounded-full border border-zinc-300 px-6 py-3 font-medium hover:bg-white dark:border-zinc-700 dark:hover:bg-zinc-900"
-          >
-            {profile ? "Sell your car" : "Just browse"}
-          </Link>
+
+        <form action="/search" role="search" className="mt-8 flex max-w-xl gap-2">
+          <input
+            name="q"
+            type="search"
+            placeholder="Try “a blue car for €15,000”"
+            aria-label="Describe the car you want"
+            className="min-w-0 flex-1 rounded-full border border-zinc-300 bg-white px-5 py-3 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 dark:border-zinc-700 dark:bg-zinc-950"
+          />
+          <button className="rounded-full bg-zinc-900 px-6 py-3 font-medium text-white hover:bg-zinc-700 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200">
+            Search
+          </button>
+        </form>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          {getMakes().map((make) => (
+            <Link
+              key={make}
+              href={`/cars?make=${encodeURIComponent(make)}`}
+              className="rounded-full border border-zinc-200 px-3 py-1.5 text-sm text-zinc-600 hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100"
+            >
+              {make}
+            </Link>
+          ))}
         </div>
+
+        {!profile && (
+          <p className="mt-6 text-sm text-zinc-500">
+            Every listing shows yearly petrol and NCT.{" "}
+            <Link href="/signup" className="font-medium text-emerald-700 hover:underline dark:text-emerald-400">
+              Sign up to add your own insurance quote →
+            </Link>
+          </p>
+        )}
       </section>
 
-      <section className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-12 sm:grid-cols-3">
-        {STEPS.map((step) => (
-          <div
-            key={step.title}
-            className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900"
-          >
-            <h2 className="text-lg font-semibold">{step.title}</h2>
-            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{step.body}</p>
+      <Suspense
+        fallback={
+          <div className="mx-auto w-full max-w-7xl px-4 py-8">
+            <div className="mb-4 h-6 w-40 rounded bg-zinc-100 dark:bg-zinc-900" />
+            <ListingGridSkeleton />
           </div>
-        ))}
-      </section>
+        }
+      >
+        <Rows />
+      </Suspense>
 
-      <section className="mx-auto w-full max-w-6xl px-4 pb-16">
-        <div className="flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold tracking-tight">
-            {profile ? "Cheapest for you to run" : "Cheapest to run right now"}
-          </h2>
-          <Link href="/cars" className="text-sm text-emerald-600 hover:underline">
-            See all →
-          </Link>
+      <section className="mx-auto mt-8 w-full max-w-7xl border-t border-zinc-200 px-4 py-12 dark:border-zinc-800">
+        <h2 className="text-sm font-medium text-zinc-500">How running costs are worked out</h2>
+        <div className="mt-6 grid gap-8 sm:grid-cols-3">
+          {STEPS.map((step, i) => (
+            <div key={step.title}>
+              <p className="text-sm text-zinc-400 tabular-nums">0{i + 1}</p>
+              <h3 className="mt-1 font-semibold">{step.title}</h3>
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{step.body}</p>
+            </div>
+          ))}
         </div>
-        <Suspense fallback={<p className="mt-6 text-sm text-zinc-500">Working out your quotes…</p>}>
-          <Featured />
-        </Suspense>
       </section>
     </>
   );

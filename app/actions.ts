@@ -15,9 +15,8 @@ import {
   startSession,
   updateUserProfile,
 } from "@/lib/auth";
-import { isCounty } from "@/lib/counties";
 import { driverDetails, parseProfile, type Profile } from "@/lib/driver-profile";
-import { addListing, getListings } from "@/lib/listings";
+import { addListing, getListings, parseListing, parsePhoto } from "@/lib/listings";
 
 export type FormState = { error?: string; message?: string };
 
@@ -91,39 +90,15 @@ export async function changePasswordAction(_state: FormState, formData: FormData
 }
 
 export async function createListing(_state: FormState, formData: FormData): Promise<FormState> {
-  if (!(await getCurrentUser())) redirect("/login?returnTo=/sell");
-  const text = reader(formData);
-  const make = text("make");
-  const model = text("model");
-  const year = Number(text("year"));
-  const engineSizeLitres = Number(text("engineSizeLitres"));
-  const price = Number(text("price"));
-  const odometerKm = Number(text("odometerKm"));
-  const location = text("location");
-  const description = text("description");
-  const currentYear = new Date().getFullYear();
+  const user = await getCurrentUser();
+  if (!user) redirect("/login?returnTo=/sell");
+  const result = parseListing(reader(formData));
+  if ("error" in result) return { error: result.error };
+  const upload = await parsePhoto(formData.get("photo"));
+  if ("error" in upload) return { error: upload.error };
+  if (!upload.photo) return { error: "Add a photo of your car before listing it." };
 
-  if (!make || !model) return { error: "Enter the make and model." };
-  if (!Number.isInteger(year) || year < 1950 || year > currentYear + 1) {
-    return { error: "Enter a valid year." };
-  }
-  if (!(engineSizeLitres >= 0.6 && engineSizeLitres <= 8)) {
-    return { error: "Engine size should be between 0.6L and 8.0L." };
-  }
-  if (!(price > 0)) return { error: "Enter a price." };
-  if (!(odometerKm >= 0)) return { error: "Enter the odometer reading." };
-  if (!isCounty(location)) return { error: "Choose the car's county." };
-
-  const listing = addListing({
-    make,
-    model,
-    year,
-    engineSizeLitres,
-    price,
-    odometerKm,
-    location,
-    description,
-  });
+  const listing = addListing(result.listing, user.id, upload.photo);
   revalidatePath("/cars");
   redirect(`/cars/${listing.id}`);
 }

@@ -6,7 +6,7 @@ import { SellForm, type SellDefaults } from "./SellForm";
 
 export const metadata: Metadata = { title: "Sell your car · TRUCOST" };
 
-const PREFILL = ["make", "model", "year", "engine", "km", "county", "price"] as const;
+const PREFILL = ["make", "model", "year", "engine", "km", "county", "colour", "price"] as const;
 
 // Accepts prefilled values from a valuation ("List it at €X").
 export default async function SellPage(props: PageProps<"/sell">) {

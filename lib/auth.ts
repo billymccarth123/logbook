@@ -18,6 +18,7 @@ export type User = {
   id: string;
   email: string;
   name: string;
+  phone: string;
   role: Role;
   status: Status;
   createdAt: string;
@@ -81,6 +82,7 @@ function toUser(row: UserRow): User {
     id: row.id,
     email: row.email,
     name: row.name,
+    phone: row.phone,
     role: row.role,
     status: row.status,
     createdAt: row.created_at,
@@ -213,9 +215,34 @@ export async function requireAdmin() {
 export function listUsers(query = "") {
   const like = `%${query.trim()}%`;
   const rows = db()
-    .prepare("SELECT * FROM users WHERE email LIKE ? OR name LIKE ? ORDER BY created_at DESC")
-    .all(like, like) as UserRow[];
+    .prepare("SELECT * FROM users WHERE email LIKE ? OR name LIKE ? OR phone LIKE ? ORDER BY created_at DESC")
+    .all(like, like, like) as UserRow[];
   return rows.map(toUser);
+}
+
+export function getUserById(userId: string) {
+  const row = db().prepare("SELECT * FROM users WHERE id = ?").get(userId) as UserRow | undefined;
+  return row ? toUser(row) : null;
+}
+
+export function activeSessionCount(userId: string) {
+  const row = db()
+    .prepare("SELECT COUNT(*) AS n FROM sessions WHERE user_id = ? AND expires_at > ?")
+    .get(userId, new Date().toISOString()) as { n: number };
+  return row.n;
+}
+
+export function signOutEverywhere(userId: string) {
+  db().prepare("DELETE FROM sessions WHERE user_id = ?").run(userId);
+}
+
+// Sets a new password without the old one, and signs the user out everywhere.
+export async function setPasswordAsAdmin(userId: string, password: string) {
+  const problem = passwordProblem(password);
+  if (problem) return problem;
+  db().prepare("UPDATE users SET password_hash = ? WHERE id = ?").run(await hashPassword(password), userId);
+  signOutEverywhere(userId);
+  return null;
 }
 
 export function userStats() {
@@ -232,7 +259,7 @@ export function userStats() {
 
 export function setUserStatus(userId: string, status: Status) {
   db().prepare("UPDATE users SET status = ? WHERE id = ?").run(status, userId);
-  if (status === "suspended") db().prepare("DELETE FROM sessions WHERE user_id = ?").run(userId);
+  if (status === "suspended") signOutEverywhere(userId);
 }
 
 export function setUserRole(userId: string, role: Role) {

@@ -1,48 +1,55 @@
 import Link from "next/link";
 import { fixedRunningCosts } from "@/lib/costs";
-import { formatEngine, formatEuro, formatKm } from "@/lib/format";
+import { formatEuro, formatKm } from "@/lib/format";
 import type { Quote } from "@/lib/ai-quotes";
 import type { Listing } from "@/lib/listings";
 import { CarImage } from "./CarImage";
+
+export const listingGrid = "grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4";
 
 // quote is null when the viewer hasn't signed up.
 export function ListingCard({ listing, quote, annualKm }: { listing: Listing; quote: Quote | null; annualKm?: number }) {
   const fixed = fixedRunningCosts(listing, annualKm);
 
   return (
-    <Link
-      href={`/cars/${listing.id}`}
-      className="group overflow-hidden rounded-2xl border border-zinc-200 bg-white transition hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900"
-    >
-      <CarImage id={listing.id} make={listing.make} model={listing.model} />
-      <div className="space-y-3 p-4">
-        <div className="flex items-baseline justify-between gap-2">
-          <h3 className="font-semibold group-hover:text-emerald-600">
-            {listing.year} {listing.make} {listing.model}
-          </h3>
-          <span className="text-lg font-bold">{formatEuro(listing.price)}</span>
-        </div>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          {formatEngine(listing.engineSizeLitres)} · {formatKm(listing.odometerKm)} · {listing.location}
+    <Link href={`/cars/${listing.id}`} className="group block min-w-0">
+      <CarImage id={listing.id} make={listing.make} model={listing.model} photoUrl={listing.photoUrl} />
+      <div className="mt-3 space-y-0.5">
+        <p className="text-lg font-semibold tabular-nums">{formatEuro(listing.price)}</p>
+        <h3 className="truncate text-sm">
+          {listing.year} {listing.make} {listing.model}
+        </h3>
+        <p className="truncate text-sm text-zinc-500">
+          {formatKm(listing.odometerKm)} · {listing.location}
         </p>
         {quote ? (
-          <div className="rounded-xl bg-emerald-50 px-3 py-2 text-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-200">
-            <div className="flex items-center justify-between">
-              <span className="text-sm">Your running costs</span>
-              <span className="font-semibold">{formatEuro(fixed.total + quote.premium)}/yr</span>
-            </div>
-            <div className="text-xs opacity-80">Includes your insurance quote of {formatEuro(quote.premium)}</div>
-          </div>
+          <p className="pt-1 text-sm font-medium text-emerald-700 dark:text-emerald-400">
+            {formatEuro(fixed.total + quote.premium)}/yr to run
+            <span className="block text-xs font-normal text-zinc-500">
+              incl. {formatEuro(quote.premium)} insurance for you
+            </span>
+          </p>
         ) : (
-          <div className="rounded-xl border border-dashed border-emerald-300 px-3 py-2 dark:border-emerald-800">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-zinc-600 dark:text-zinc-400">Petrol + NCT</span>
-              <span className="font-semibold">{formatEuro(fixed.total)}/yr</span>
-            </div>
-            <div className="text-xs font-medium text-emerald-700 dark:text-emerald-400">Sign up to see your insurance quote</div>
-          </div>
+          <p className="pt-1 text-sm font-medium text-emerald-700 dark:text-emerald-400">
+            {formatEuro(fixed.total)}/yr petrol + NCT
+            <span className="block text-xs font-normal text-zinc-500">Sign up to add your insurance quote</span>
+          </p>
         )}
       </div>
     </Link>
+  );
+}
+
+export function ListingGridSkeleton({ count = 4 }: { count?: number }) {
+  return (
+    <div className={listingGrid} aria-hidden>
+      {Array.from({ length: count }, (_, i) => (
+        <div key={i} className="animate-pulse">
+          <div className="aspect-4/3 rounded-xl bg-zinc-100 dark:bg-zinc-900" />
+          <div className="mt-3 h-5 w-20 rounded bg-zinc-100 dark:bg-zinc-900" />
+          <div className="mt-2 h-4 w-32 rounded bg-zinc-100 dark:bg-zinc-900" />
+        </div>
+      ))}
+    </div>
   );
 }
