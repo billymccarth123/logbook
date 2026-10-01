@@ -15,7 +15,7 @@ export async function messageSeller(_state: FormState, formData: FormData): Prom
   const user = await getCurrentUser();
   if (!user) redirect(`/login?returnTo=${encodeURIComponent(`/cars/${listingId}`)}`);
 
-  const listing = getListing(listingId);
+  const listing = await getListing(listingId);
   if (!listing?.sellerId) return { error: "This listing can't be messaged." };
   if (listing.sellerId === user.id) return { error: "This is your own listing." };
   const body = String(formData.get("body") ?? "").trim();
@@ -23,7 +23,7 @@ export async function messageSeller(_state: FormState, formData: FormData): Prom
   if (problem) return { error: problem };
   if (!allowSend(user.id)) return { error: TOO_FAST };
 
-  const conversationId = startConversation(listing, user.id, body);
+  const conversationId = await startConversation(listing, user.id, body);
   revalidatePath("/messages", "layout");
   redirect(`/messages/${conversationId}`);
 }
@@ -31,7 +31,7 @@ export async function messageSeller(_state: FormState, formData: FormData): Prom
 // Called by the chat once messages are on screen, so unread badges clear.
 export async function markConversationRead(conversationId: string) {
   const user = await getCurrentUser();
-  if (user) markRead(conversationId, user.id);
+  if (user) await markRead(conversationId, user.id);
 }
 
 // From the chat box in a conversation.
@@ -42,7 +42,7 @@ export async function sendReply(conversationId: string, body: string): Promise<F
   const problem = messageProblem(text);
   if (problem) return { error: problem };
   if (!allowSend(user.id)) return { error: TOO_FAST };
-  if (!sendMessage(conversationId, user.id, text)) return { error: "This conversation no longer exists." };
+  if (!(await sendMessage(conversationId, user.id, text))) return { error: "This conversation no longer exists." };
 
   revalidatePath("/messages", "layout");
   return {};

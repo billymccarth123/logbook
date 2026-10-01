@@ -15,9 +15,12 @@ export default async function AdminPage(props: PageProps<"/admin">) {
 
   const { q } = await props.searchParams;
   const query = typeof q === "string" ? q : "";
-  const users = listUsers(query);
-  const stats = userStats();
-  const listingCounts = listingCountsBySeller();
+  const [users, stats, listingCounts, listingTotal] = await Promise.all([
+    listUsers(query),
+    userStats(),
+    listingCountsBySeller(),
+    countListings(),
+  ]);
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8">
@@ -37,7 +40,7 @@ export default async function AdminPage(props: PageProps<"/admin">) {
           ["New this week", stats.newThisWeek],
           ["Active this week", stats.activeThisWeek],
           ["Suspended", stats.suspended],
-          ["Listings", countListings()],
+          ["Listings", listingTotal],
         ].map(([label, value]) => (
           <div key={label} className="rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
             <dt className="text-xs text-zinc-500">{label}</dt>

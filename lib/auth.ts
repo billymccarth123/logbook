@@ -1,10 +1,10 @@
 import "server-only";
 
-import { createHash, randomBytes, randomUUID, scrypt, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes, scrypt, timingSafeEqual } from "node:crypto";
 import { promisify } from "node:util";
 import { cookies } from "next/headers";
 import { cache } from "react";
-import { db, type Role, type Status, type UserRow } from "./db";
+import { db, must, mustCount, type Role, type Status, type UserRow } from "./db";
 import { parseProfile, type DriverDetails, type Profile } from "./driver-profile";
 import { MIN_PASSWORD_LENGTH } from "./password-rules";
 
@@ -67,8 +67,7 @@ function isConfiguredAdmin(email: string) {
 function toUser(row: UserRow): User {
   let profile: Profile | null = null;
   try {
-    const details = JSON.parse(row.details_json) as Record<string, unknown>;
-    const values: Record<string, unknown> = { ...details, name: row.name, email: row.email, phone: row.phone };
+    const values: Record<string, unknown> = { ...row.details, name: row.name, email: row.email, phone: row.phone };
     const result = parseProfile((key) => {
       const value = values[key];
       if (typeof value === "boolean") return value ? "yes" : "no";
@@ -91,42 +90,60 @@ function toUser(row: UserRow): User {
   };
 }
 
-export function findUserByEmail(email: string) {
-  const row = db().prepare("SELECT * FROM users WHERE email = ?").get(email) as UserRow | undefined;
-  return row ?? null;
+// Emails are case-insensitive (citext column).
+export async function findUserByEmail(email: string) {
+  return must(await db().from("users").select("*").eq("email", email).maybeSingle<UserRow>());
 }
 
 export async function createUser(profile: Profile, password: string) {
   const { name, email, phone, ...details } = profile;
-  const id = randomUUID();
   const now = new Date().toISOString();
-  db()
-    .prepare(
-      `INSERT INTO users (id, email, name, phone, password_hash, role, details_json, created_at, last_login_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    )
-    .run(id, email, name, phone, await hashPassword(password), isConfiguredAdmin(email) ? "admin" : "user", JSON.stringify(details), now, now);
-  return id;
+  const row = must(
+    await db()
+      .from("users")
+      .insert({
+        email,
+        name,
+        phone,
+        password_hash: await hashPassword(password),
+        role: isConfiguredAdmin(email) ? "admin" : "user",
+        details,
+        created_at: now,
+        last_login_at: now,
+      })
+      .select("id")
+      .single<{ id: string }>(),
+  );
+  return row.id;
 }
 
-export function updateUserProfile(userId: string, profile: Profile) {
+export async function updateUserProfile(userId: string, profile: Profile) {
   const { name, email, phone, ...details } = profile;
-  db()
-    .prepare("UPDATE users SET name = ?, email = ?, phone = ?, details_json = ? WHERE id = ?")
-    .run(name, email, phone, JSON.stringify(details satisfies DriverDetails), userId);
+  must(
+    await db()
+      .from("users")
+      .update({ name, email, phone, details: details satisfies DriverDetails })
+      .eq("id", userId),
+  );
 }
 
 export async function changePassword(userId: string, current: string, next: string) {
-  const row = db().prepare("SELECT password_hash FROM users WHERE id = ?").get(userId) as { password_hash: string } | undefined;
+  const row = must(
+    await db().from("users").select("password_hash").eq("id", userId).maybeSingle<{ password_hash: string }>(),
+  );
   if (!row || !(await verifyPassword(current, row.password_hash))) return "Your current password isn't right.";
   const problem = passwordProblem(next);
   if (problem) return problem;
-  db().prepare("UPDATE users SET password_hash = ? WHERE id = ?").run(await hashPassword(next), userId);
+  must(await db().from("users").update({ password_hash: await hashPassword(next) }).eq("id", userId));
   // Sign out every other device.
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
-  db()
-    .prepare("DELETE FROM sessions WHERE user_id = ? AND token_hash != ?")
-    .run(userId, token ? hashToken(token) : "");
+  must(
+    await db()
+      .from("sessions")
+      .delete()
+      .eq("user_id", userId)
+      .neq("token_hash", token ? hashToken(token) : ""),
+  );
   return null;
 }
 
@@ -143,7 +160,7 @@ export async function checkCredentials(email: string, password: string): Promise
     return { error: `Too many attempts. Try again in ${LOCK_MINUTES} minutes.` };
   }
 
-  const row = findUserByEmail(email);
+  const row = await findUserByEmail(email);
   dummyHash ??= hashPassword(randomBytes(16).toString("hex"));
   const valid = await verifyPassword(password, row?.password_hash ?? (await dummyHash));
 
@@ -159,7 +176,7 @@ export async function checkCredentials(email: string, password: string): Promise
   if (row.status === "suspended") return { error: "This account has been suspended. Contact support." };
 
   const role = row.role === "admin" || isConfiguredAdmin(row.email) ? "admin" : "user";
-  db().prepare("UPDATE users SET last_login_at = ?, role = ? WHERE id = ?").run(new Date().toISOString(), role, row.id);
+  must(await db().from("users").update({ last_login_at: new Date().toISOString(), role }).eq("id", row.id));
   return { userId: row.id };
 }
 
@@ -173,9 +190,14 @@ export async function startSession(userId: string) {
   const token = randomBytes(32).toString("base64url");
   const now = new Date();
   const expires = new Date(now.getTime() + SESSION_DAYS * 86_400_000);
-  db()
-    .prepare("INSERT INTO sessions (token_hash, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)")
-    .run(hashToken(token), userId, now.toISOString(), expires.toISOString());
+  must(
+    await db().from("sessions").insert({
+      token_hash: hashToken(token),
+      user_id: userId,
+      created_at: now.toISOString(),
+      expires_at: expires.toISOString(),
+    }),
+  );
   (await cookies()).set(SESSION_COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -188,7 +210,7 @@ export async function startSession(userId: string) {
 export async function endSession() {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE)?.value;
-  if (token) db().prepare("DELETE FROM sessions WHERE token_hash = ?").run(hashToken(token));
+  if (token) must(await db().from("sessions").delete().eq("token_hash", hashToken(token)));
   cookieStore.delete(SESSION_COOKIE);
 }
 
@@ -196,13 +218,16 @@ export async function endSession() {
 export const getCurrentUser = cache(async (): Promise<User | null> => {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return null;
-  const row = db()
-    .prepare(
-      `SELECT users.* FROM sessions JOIN users ON users.id = sessions.user_id
-       WHERE sessions.token_hash = ? AND sessions.expires_at > ? AND users.status = 'active'`,
-    )
-    .get(hashToken(token), new Date().toISOString()) as UserRow | undefined;
-  return row ? toUser(row) : null;
+  const session = must(
+    await db()
+      .from("sessions")
+      .select("users!inner(*)")
+      .eq("token_hash", hashToken(token))
+      .gt("expires_at", new Date().toISOString())
+      .eq("users.status", "active")
+      .maybeSingle<{ users: UserRow }>(),
+  );
+  return session ? toUser(session.users) : null;
 });
 
 export async function requireAdmin() {
@@ -212,60 +237,69 @@ export async function requireAdmin() {
 
 // ---- Admin ----
 
-export function listUsers(query = "") {
-  const like = `%${query.trim()}%`;
-  const rows = db()
-    .prepare("SELECT * FROM users WHERE email LIKE ? OR name LIKE ? OR phone LIKE ? ORDER BY created_at DESC")
-    .all(like, like, like) as UserRow[];
-  return rows.map(toUser);
+// Every user, newest first, optionally matching name, email or phone.
+export async function listUsers(query = "") {
+  const rows = must(await db().from("users").select("*").order("created_at", { ascending: false })) as UserRow[];
+  const q = query.trim().toLowerCase();
+  const matches = q ? rows.filter((row) => `${row.email} ${row.name} ${row.phone}`.toLowerCase().includes(q)) : rows;
+  return matches.map(toUser);
 }
 
-export function getUserById(userId: string) {
-  const row = db().prepare("SELECT * FROM users WHERE id = ?").get(userId) as UserRow | undefined;
+export async function getUserById(userId: string) {
+  const row = must(await db().from("users").select("*").eq("id", userId).maybeSingle<UserRow>());
   return row ? toUser(row) : null;
 }
 
-export function activeSessionCount(userId: string) {
-  const row = db()
-    .prepare("SELECT COUNT(*) AS n FROM sessions WHERE user_id = ? AND expires_at > ?")
-    .get(userId, new Date().toISOString()) as { n: number };
-  return row.n;
+export async function activeSessionCount(userId: string) {
+  return mustCount(
+    await db()
+      .from("sessions")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .gt("expires_at", new Date().toISOString()),
+  );
 }
 
-export function signOutEverywhere(userId: string) {
-  db().prepare("DELETE FROM sessions WHERE user_id = ?").run(userId);
+export async function signOutEverywhere(userId: string) {
+  must(await db().from("sessions").delete().eq("user_id", userId));
 }
 
 // Sets a new password without the old one, and signs the user out everywhere.
 export async function setPasswordAsAdmin(userId: string, password: string) {
   const problem = passwordProblem(password);
   if (problem) return problem;
-  db().prepare("UPDATE users SET password_hash = ? WHERE id = ?").run(await hashPassword(password), userId);
-  signOutEverywhere(userId);
+  must(await db().from("users").update({ password_hash: await hashPassword(password) }).eq("id", userId));
+  await signOutEverywhere(userId);
   return null;
 }
 
-export function userStats() {
+export async function userStats() {
   const weekAgo = new Date(Date.now() - 7 * 86_400_000).toISOString();
-  const count = (sql: string, ...params: string[]) =>
-    (db().prepare(sql).get(...params) as { n: number }).n;
+  const users = () => db().from("users").select("*", { count: "exact", head: true });
+  const [total, newThisWeek, activeThisWeek, suspended] = await Promise.all([
+    users(),
+    users().gt("created_at", weekAgo),
+    users().gt("last_login_at", weekAgo),
+    users().eq("status", "suspended"),
+  ]);
   return {
-    total: count("SELECT COUNT(*) AS n FROM users"),
-    newThisWeek: count("SELECT COUNT(*) AS n FROM users WHERE created_at > ?", weekAgo),
-    activeThisWeek: count("SELECT COUNT(*) AS n FROM users WHERE last_login_at > ?", weekAgo),
-    suspended: count("SELECT COUNT(*) AS n FROM users WHERE status = 'suspended'"),
+    total: mustCount(total),
+    newThisWeek: mustCount(newThisWeek),
+    activeThisWeek: mustCount(activeThisWeek),
+    suspended: mustCount(suspended),
   };
 }
 
-export function setUserStatus(userId: string, status: Status) {
-  db().prepare("UPDATE users SET status = ? WHERE id = ?").run(status, userId);
-  if (status === "suspended") signOutEverywhere(userId);
+export async function setUserStatus(userId: string, status: Status) {
+  must(await db().from("users").update({ status }).eq("id", userId));
+  if (status === "suspended") await signOutEverywhere(userId);
 }
 
-export function setUserRole(userId: string, role: Role) {
-  db().prepare("UPDATE users SET role = ? WHERE id = ?").run(role, userId);
+export async function setUserRole(userId: string, role: Role) {
+  must(await db().from("users").update({ role }).eq("id", userId));
 }
 
-export function deleteUser(userId: string) {
-  db().prepare("DELETE FROM users WHERE id = ?").run(userId);
+// Also deletes their listings, sessions and conversations (ON DELETE CASCADE).
+export async function deleteUser(userId: string) {
+  must(await db().from("users").delete().eq("id", userId));
 }

@@ -15,11 +15,12 @@ export default async function ConversationPage(props: PageProps<"/messages/[id]"
   const { id } = await props.params;
   const user = await getCurrentUser();
   if (!user) redirect(`/login?returnTo=${encodeURIComponent(`/messages/${id}`)}`);
-  const conversation = getConversation(id, user.id);
+  const conversation = await getConversation(id, user.id);
   if (!conversation) notFound();
 
   const { listing, otherName, selling, otherSince } = conversation;
-  const messages = getMessages(id).map((message) => ({
+  const [conversations, allMessages] = await Promise.all([listConversations(user.id), getMessages(id)]);
+  const messages = allMessages.map((message) => ({
     id: message.id,
     mine: message.senderId === user.id,
     body: message.body,
@@ -35,7 +36,7 @@ export default async function ConversationPage(props: PageProps<"/messages/[id]"
       <div className="grid h-[calc(100dvh-4rem)] overflow-hidden border-zinc-200 grid-cols-[minmax(0,1fr)] sm:h-[calc(100dvh-7rem)] sm:rounded-2xl sm:border lg:grid-cols-[360px_minmax(0,1fr)] dark:border-zinc-800">
         <section className="hidden overflow-y-auto border-r border-zinc-200 lg:block dark:border-zinc-800">
           <h1 className="border-b border-zinc-200 px-4 py-3 text-lg font-semibold dark:border-zinc-800">Messages</h1>
-          <ConversationList conversations={listConversations(user.id)} userId={user.id} activeId={id} />
+          <ConversationList conversations={conversations} userId={user.id} activeId={id} />
         </section>
 
         <section className="flex min-h-0 flex-col">

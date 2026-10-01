@@ -30,7 +30,7 @@ function safeReturnPath(value: string) {
 
 // Start pricing every car so quotes are ready by the time the user browses.
 function warmQuotes(profile: Profile) {
-  after(() => getQuotes(driverDetails(profile), getListings()));
+  after(async () => getQuotes(driverDetails(profile), await getListings()));
 }
 
 export async function signUp(_state: FormState, formData: FormData): Promise<FormState> {
@@ -39,7 +39,7 @@ export async function signUp(_state: FormState, formData: FormData): Promise<For
   const password = String(formData.get("password") ?? "");
   const problem = passwordProblem(password);
   if (problem) return { error: problem };
-  if (findUserByEmail(result.profile.email)) {
+  if (await findUserByEmail(result.profile.email)) {
     return { error: "An account with that email already exists. Log in instead." };
   }
 
@@ -70,10 +70,10 @@ export async function updateQuoteDetails(_state: FormState, formData: FormData):
   if (!user) redirect("/login?returnTo=/profile");
   const result = parseProfile(reader(formData));
   if ("error" in result) return { error: result.error };
-  const existing = findUserByEmail(result.profile.email);
+  const existing = await findUserByEmail(result.profile.email);
   if (existing && existing.id !== user.id) return { error: "Another account already uses that email." };
 
-  updateUserProfile(user.id, result.profile);
+  await updateUserProfile(user.id, result.profile);
   warmQuotes(result.profile);
   redirect(safeReturnPath(reader(formData)("returnTo")));
 }
@@ -98,7 +98,7 @@ export async function createListing(_state: FormState, formData: FormData): Prom
   if ("error" in upload) return { error: upload.error };
   if (!upload.photo) return { error: "Add a photo of your car before listing it." };
 
-  const listing = addListing(result.listing, user.id, upload.photo);
+  const listing = await addListing(result.listing, user.id, upload.photo);
   revalidatePath("/cars");
   redirect(`/cars/${listing.id}`);
 }

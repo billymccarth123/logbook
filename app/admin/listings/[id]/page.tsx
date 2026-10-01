@@ -15,9 +15,9 @@ export default async function AdminListingPage(props: PageProps<"/admin/listings
   const admin = await requireAdmin();
   if (!admin) notFound();
   const { id } = await props.params;
-  const listing = getListing(id);
+  const listing = await getListing(id);
   if (!listing) notFound();
-  const seller = listing.sellerId ? getUserById(listing.sellerId) : null;
+  const seller = listing.sellerId ? await getUserById(listing.sellerId) : null;
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8">

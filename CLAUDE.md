@@ -47,7 +47,7 @@ Quotes are built in two layers, and each shows a likely range across insurers as
 
 ### Accounts
 
-Real accounts are stored in SQLite using Node's built-in driver (`node:sqlite`), in `data/trucost.db`. The database file is git-ignored because it holds personal data.
+Accounts, sessions, listings, photos and messages are stored in Supabase Postgres. The tables and the 12 demo listings are created by `supabase/schema.sql` (run it in the Supabase SQL Editor; it's safe to rerun). The server connects with `SUPABASE_SERVICE_ROLE_KEY` (`lib/db.ts`). Every table has Row Level Security on with no policies, so the public anon key can't read anything. Logins use the app's own scrypt passwords and session tokens, stored in the `users` and `sessions` tables, not Supabase Auth.
 
 - **Sign-up** (`/signup`): name, email, password (10+ characters) and the quote questions, all in one form. It creates the user and logs them in.
 - **Log in and out** (`/login`, the Log out button on `/profile`): sessions last 30 days. The cookie holds a random token, and the database stores only its SHA-256 hash. After 5 failed logins an email is locked for 15 minutes (in memory).
@@ -59,9 +59,9 @@ Real accounts are stored in SQLite using Node's built-in driver (`node:sqlite`),
   - `/admin/listings`: every listing with its seller. `/admin/listings/[id]` edits any field, or moves the listing to another account by seller email.
   - Admins can edit their own details but can't suspend, demote, delete or reset the password of their own account there, so there's always at least one admin.
 - **Code:** `lib/db.ts` (schema and connection), `lib/auth.ts` (passwords, sessions, users, admin queries), `app/actions.ts` (sign up, log in, update details, change password, create listing), `app/admin/`.
-- **Listings** are in the same database (`listings` table, `seller_id` links to `users`). The 12 demo listings are added once when the table is first created and have no seller.
+- **Listings** are in the same database (`listings` table, `seller_id` links to `users`). The 12 demo listings are added by `supabase/schema.sql` while the table is empty, and have no seller.
 
-Not built yet: password reset and email verification. Both need an email service, e.g. Resend or Postmark. Before deploying, move from SQLite to a hosted database such as Postgres, because a single file doesn't survive serverless hosting or multiple servers.
+Not built yet: password reset and email verification. Both need an email service, e.g. Resend or Postmark. The failed-login lockout and message rate limit are in memory, so they reset on restart and aren't shared between servers.
 
 ### Car valuations
 
@@ -140,7 +140,6 @@ Buyers and sellers chat in the site (`lib/messages.ts`, `app/messages/`). There'
 ### Later
 
 - Password reset and email verification (needs an email service)
-- A hosted database for users and listings (both are in SQLite for now)
 - Email or text notifications for new messages
 - Diesel, hybrid and EV fuel costs, and motor tax
 - Calibrating the rating model against real quotes from an insurer or broker partner
@@ -156,6 +155,8 @@ Buyers and sellers chat in the site (`lib/messages.ts`, `app/messages/`). There'
 Set these in `.env.local` (ignored by git):
 
 - `ANTHROPIC_API_KEY` (optional): turns on live AI quotes, AI search and live market research. Without it, quotes use the rating model, search uses keywords, and valuations use the market database (kept up to date by Claude Code, see above).
+- `NEXT_PUBLIC_SUPABASE_URL`: the Supabase project URL.
+- `SUPABASE_SERVICE_ROLE_KEY`: the service role (secret) key. Server only; never prefix it with `NEXT_PUBLIC_`.
 - `ADMIN_EMAILS`: comma-separated emails that become admins when they sign up or log in.
 - `MARKET_REFRESH_TOKEN`: any long random string, needed to call the bulk refresh endpoint.
 
@@ -180,7 +181,7 @@ Set these in `.env.local` (ignored by git):
 - `lib/colours.ts`: car colours (pure)
 - `lib/messages.ts`: buyer and seller conversations, unread counts and a send rate limit (server only)
 - `app/messages/`: inbox, chat, the "Message seller" box and their actions
-- `lib/listings.ts`: listings in SQLite (seeded with demo cars), validation, and admin queries
+- `lib/listings.ts`: listings and photos in Supabase, validation, and admin queries
 - `lib/photos.ts`: photo credits
 - `lib/valuation.ts`: valuation options, validation and adjustments (pure)
 - `lib/ai-valuation.ts`: market research with Claude web search (server only)
@@ -189,7 +190,9 @@ Set these in `.env.local` (ignored by git):
 - `lib/anthropic.ts`: shared Claude client (null without an API key)
 - `app/api/market/refresh/route.ts`: token-protected bulk refresh of market values
 - `lib/profile.ts`: the signed-in user's quote details
-- `lib/db.ts`, `lib/auth.ts`: accounts database, passwords, sessions, admin queries
+- `lib/db.ts`: the server-only Supabase client (service role key)
+- `lib/auth.ts`: passwords, sessions, users, admin queries
+- `supabase/schema.sql`: tables, the inbox function and demo listings
 - `lib/password-rules.ts`: password length rule shared with the form
 - `app/admin/`: users, user detail, listings and listing editor pages, actions, shared UI and CSV export
 - `public/`: static assets

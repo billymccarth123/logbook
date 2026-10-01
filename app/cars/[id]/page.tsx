@@ -13,7 +13,7 @@ import { MessageSeller } from "../../messages/MessageSeller";
 
 export async function generateMetadata(props: PageProps<"/cars/[id]">) {
   const { id } = await props.params;
-  const listing = getListing(id);
+  const listing = await getListing(id);
   return {
     title: listing ? `${listing.year} ${listing.make} ${listing.model} · TRUCOST` : "Car not found · TRUCOST",
   };
@@ -21,14 +21,14 @@ export async function generateMetadata(props: PageProps<"/cars/[id]">) {
 
 export default async function ListingPage(props: PageProps<"/cars/[id]">) {
   const { id } = await props.params;
-  const listing = getListing(id);
+  const listing = await getListing(id);
   if (!listing) notFound();
 
   const profile = await getProfile();
   const quote = profile ? await getQuote(driverDetails(profile), listing) : null;
   const user = await getCurrentUser();
-  const seller = listing.sellerId ? getUserById(listing.sellerId) : null;
-  const conversationId = user && seller && user.id !== seller.id ? findConversation(listing.id, user.id) : null;
+  const seller = listing.sellerId ? await getUserById(listing.sellerId) : null;
+  const conversationId = user && seller && user.id !== seller.id ? await findConversation(listing.id, user.id) : null;
   const listed = new Date(listing.createdAt).toLocaleDateString("en-IE", { day: "numeric", month: "long" });
 
   const specs = [

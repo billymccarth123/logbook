@@ -43,7 +43,7 @@ function SearchBox({ query }: { query: string }) {
 async function Results({ query }: { query: string }) {
   const user = await getCurrentUser();
   const profile = user?.profile ?? null;
-  const listings = getListings();
+  const listings = await getListings();
   const quotes = profile ? await getQuotes(driverDetails(profile), listings) : null;
   const cars = listings.map((listing) => {
     const quote = quotes?.get(listing.id) ?? null;

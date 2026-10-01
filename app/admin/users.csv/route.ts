@@ -15,7 +15,7 @@ export async function GET() {
     "Name", "Email", "Phone", "Role", "Status", "Signed up", "Last login",
     "Age", "County", "Occupation", "Licence", "No claims years", "Penalty points", "Km per year", "Cover",
   ];
-  const rows = listUsers().map((user) => {
+  const rows = (await listUsers()).map((user) => {
     const p = user.profile;
     return [
       user.name, user.email, user.phone, user.role, user.status, user.createdAt, user.lastLoginAt,

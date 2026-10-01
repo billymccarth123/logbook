@@ -59,7 +59,7 @@ const field =
   "mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 dark:border-zinc-700 dark:bg-zinc-950";
 const label = "block text-xs font-medium text-zinc-500";
 
-function FilterForm({ filters }: { filters: Filters }) {
+function FilterForm({ filters, makes }: { filters: Filters; makes: string[] }) {
   return (
     <form action="/cars" className="space-y-4">
       <input type="hidden" name="sort" value={filters.sort} />
@@ -71,7 +71,7 @@ function FilterForm({ filters }: { filters: Filters }) {
         Make
         <select name="make" defaultValue={filters.make} className={field}>
           <option value="">Any</option>
-          {getMakes().map((m) => (
+          {makes.map((m) => (
             <option key={m}>{m}</option>
           ))}
         </select>
@@ -151,7 +151,7 @@ export default async function CarsPage(props: PageProps<"/cars">) {
   };
 
   const profile = await getProfile();
-  const listings = getListings();
+  const [listings, makes] = await Promise.all([getListings(), getMakes()]);
   const quotes = profile ? await getQuotes(driverDetails(profile), listings) : null;
 
   const results = listings
@@ -215,7 +215,7 @@ export default async function CarsPage(props: PageProps<"/cars">) {
       <div className="mt-6 grid gap-8 lg:grid-cols-[220px_1fr]">
         <aside className="hidden lg:block">
           <div className="sticky top-24">
-            <FilterForm filters={filters} />
+            <FilterForm filters={filters} makes={makes} />
           </div>
         </aside>
 
@@ -225,7 +225,7 @@ export default async function CarsPage(props: PageProps<"/cars">) {
               Filters{active.length > 0 && ` (${active.length})`}
             </summary>
             <div className="border-t border-zinc-200 p-4 dark:border-zinc-800">
-              <FilterForm filters={filters} />
+              <FilterForm filters={filters} makes={makes} />
             </div>
           </details>
 

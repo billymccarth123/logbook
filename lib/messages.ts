@@ -1,7 +1,6 @@
 import "server-only";
 
-import { randomUUID } from "node:crypto";
-import { db } from "./db";
+import { db, must } from "./db";
 import { getListing, type Listing } from "./listings";
 
 export const MAX_MESSAGE_LENGTH = 2000;
@@ -24,10 +23,20 @@ type ConversationRow = {
   listing_id: number;
   buyer_id: string;
   seller_id: string;
-  created_at: string;
+};
+
+// A row from the conversation_list() database function (supabase/schema.sql).
+type SummaryRow = {
+  id: string;
+  listing_id: number;
+  seller_id: string;
   last_message_at: string;
-  buyer_read_at: string;
-  seller_read_at: string;
+  unread: number;
+  other_name: string | null;
+  last_id: number | null;
+  last_sender_id: string | null;
+  last_body: string | null;
+  last_created_at: string | null;
 };
 
 type MessageRow = { id: number; sender_id: string; body: string; created_at: string };
@@ -58,65 +67,82 @@ export function allowSend(userId: string) {
 
 // ---- Conversations ----
 
-export function findConversation(listingId: string, buyerId: string) {
-  const row = db()
-    .prepare("SELECT id FROM conversations WHERE listing_id = ? AND buyer_id = ?")
-    .get(listingId, buyerId) as { id: string } | undefined;
+export async function findConversation(listingId: string, buyerId: string) {
+  const row = must(
+    await db()
+      .from("conversations")
+      .select("id")
+      .eq("listing_id", listingId)
+      .eq("buyer_id", buyerId)
+      .maybeSingle<{ id: string }>(),
+  );
   return row?.id ?? null;
 }
 
-function insertMessage(conversationId: string, senderId: string, body: string, isBuyer: boolean) {
+async function insertMessage(conversationId: string, senderId: string, body: string, isBuyer: boolean) {
   const now = new Date().toISOString();
-  db()
-    .prepare("INSERT INTO messages (conversation_id, sender_id, body, created_at) VALUES (?, ?, ?, ?)")
-    .run(conversationId, senderId, body, now);
+  must(
+    await db().from("messages").insert({ conversation_id: conversationId, sender_id: senderId, body, created_at: now }),
+  );
   // Sending a message means you've read everything before it.
-  db()
-    .prepare(`UPDATE conversations SET last_message_at = ?, ${isBuyer ? "buyer_read_at" : "seller_read_at"} = ? WHERE id = ?`)
-    .run(now, now, conversationId);
+  must(
+    await db()
+      .from("conversations")
+      .update({ last_message_at: now, [isBuyer ? "buyer_read_at" : "seller_read_at"]: now })
+      .eq("id", conversationId),
+  );
 }
 
 // Opens (or reuses) the buyer's conversation about a listing and sends the first message.
-export function startConversation(listing: Listing, buyerId: string, body: string) {
+export async function startConversation(listing: Listing, buyerId: string, body: string) {
   if (!listing.sellerId) throw new Error("This listing has no seller to message.");
-  const existing = findConversation(listing.id, buyerId);
-  if (existing) {
-    insertMessage(existing, buyerId, body, true);
-    return existing;
-  }
-  const id = randomUUID();
   const now = new Date().toISOString();
-  const database = db();
-  database.exec("BEGIN");
-  try {
-    database
-      .prepare(
-        `INSERT INTO conversations (id, listing_id, buyer_id, seller_id, created_at, last_message_at, buyer_read_at, seller_read_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      )
-      // The seller hasn't read anything yet, so their read time starts before the first message.
-      .run(id, listing.id, buyerId, listing.sellerId, now, now, now, "");
-    insertMessage(id, buyerId, body, true);
-    database.exec("COMMIT");
-  } catch (error) {
-    database.exec("ROLLBACK");
-    throw error;
-  }
+  // The seller's read time starts empty: they haven't read anything yet.
+  must(
+    await db().from("conversations").upsert(
+      {
+        listing_id: Number(listing.id),
+        buyer_id: buyerId,
+        seller_id: listing.sellerId,
+        created_at: now,
+        last_message_at: now,
+        buyer_read_at: now,
+      },
+      { onConflict: "listing_id,buyer_id", ignoreDuplicates: true },
+    ),
+  );
+  const id = (await findConversation(listing.id, buyerId))!;
+  await insertMessage(id, buyerId, body, true);
   return id;
 }
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function conversationRow(conversationId: string) {
+  if (!UUID.test(conversationId)) return null;
+  return must(
+    await db()
+      .from("conversations")
+      .select("id, listing_id, buyer_id, seller_id")
+      .eq("id", conversationId)
+      .maybeSingle<ConversationRow>(),
+  );
+}
+
 // The conversation if this user is the buyer or seller in it, otherwise null.
-export function getConversation(conversationId: string, userId: string) {
-  const row = db()
-    .prepare("SELECT * FROM conversations WHERE id = ? AND (buyer_id = ? OR seller_id = ?)")
-    .get(conversationId, userId, userId) as ConversationRow | undefined;
-  if (!row) return null;
-  const listing = getListing(String(row.listing_id));
+export async function getConversation(conversationId: string, userId: string) {
+  const row = await conversationRow(conversationId);
+  if (!row || (row.buyer_id !== userId && row.seller_id !== userId)) return null;
+  const listing = await getListing(String(row.listing_id));
   if (!listing) return null;
   const selling = row.seller_id === userId;
-  const other = db()
-    .prepare("SELECT name, created_at FROM users WHERE id = ?")
-    .get(selling ? row.buyer_id : row.seller_id) as { name: string; created_at: string } | undefined;
+  const other = must(
+    await db()
+      .from("users")
+      .select("name, created_at")
+      .eq("id", selling ? row.buyer_id : row.seller_id)
+      .maybeSingle<{ name: string; created_at: string }>(),
+  );
   return {
     id: row.id,
     listing,
@@ -126,62 +152,52 @@ export function getConversation(conversationId: string, userId: string) {
   };
 }
 
-export function getMessages(conversationId: string) {
-  return (
-    db().prepare("SELECT * FROM messages WHERE conversation_id = ? ORDER BY id").all(conversationId) as MessageRow[]
-  ).map(toMessage);
+export async function getMessages(conversationId: string) {
+  const rows = must(
+    await db().from("messages").select("id, sender_id, body, created_at").eq("conversation_id", conversationId).order("id"),
+  ) as MessageRow[];
+  return rows.map(toMessage);
 }
 
 // Sends a message if this user is in the conversation. Returns false otherwise.
-export function sendMessage(conversationId: string, senderId: string, body: string) {
-  const row = db()
-    .prepare("SELECT buyer_id, seller_id FROM conversations WHERE id = ?")
-    .get(conversationId) as { buyer_id: string; seller_id: string } | undefined;
+export async function sendMessage(conversationId: string, senderId: string, body: string) {
+  const row = await conversationRow(conversationId);
   if (!row || (row.buyer_id !== senderId && row.seller_id !== senderId)) return false;
-  insertMessage(conversationId, senderId, body, row.buyer_id === senderId);
+  await insertMessage(conversationId, senderId, body, row.buyer_id === senderId);
   return true;
 }
 
-export function markRead(conversationId: string, userId: string) {
+export async function markRead(conversationId: string, userId: string) {
+  if (!UUID.test(conversationId)) return;
   const now = new Date().toISOString();
-  db()
-    .prepare(
-      `UPDATE conversations SET
-         buyer_read_at = CASE WHEN buyer_id = ? THEN ? ELSE buyer_read_at END,
-         seller_read_at = CASE WHEN seller_id = ? THEN ? ELSE seller_read_at END
-       WHERE id = ?`,
-    )
-    .run(userId, now, userId, now, conversationId);
+  await Promise.all([
+    db().from("conversations").update({ buyer_read_at: now }).eq("id", conversationId).eq("buyer_id", userId).then(must),
+    db().from("conversations").update({ seller_read_at: now }).eq("id", conversationId).eq("seller_id", userId).then(must),
+  ]);
 }
 
-// Unread = messages from the other person sent after this user last read.
-const UNREAD = `(SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id AND m.sender_id != ?
-  AND m.created_at > CASE WHEN c.buyer_id = ? THEN c.buyer_read_at ELSE c.seller_read_at END)`;
+async function summaryRows(userId: string) {
+  return must(await db().rpc("conversation_list", { p_user: userId })) as SummaryRow[];
+}
 
-export function listConversations(userId: string): ConversationSummary[] {
-  const rows = db()
-    .prepare(
-      `SELECT c.*, ${UNREAD} AS unread, u.name AS other_name
-       FROM conversations c
-       LEFT JOIN users u ON u.id = CASE WHEN c.buyer_id = ? THEN c.seller_id ELSE c.buyer_id END
-       WHERE c.buyer_id = ? OR c.seller_id = ?
-       ORDER BY c.last_message_at DESC`,
-    )
-    .all(userId, userId, userId, userId, userId) as (ConversationRow & { unread: number; other_name: string | null })[];
-  const lastMessage = db().prepare("SELECT * FROM messages WHERE conversation_id = ? ORDER BY id DESC LIMIT 1");
+export async function listConversations(userId: string): Promise<ConversationSummary[]> {
+  const rows = await summaryRows(userId);
+  const listings = await Promise.all(rows.map((row) => getListing(String(row.listing_id))));
 
-  return rows.flatMap((row) => {
-    const listing = getListing(String(row.listing_id));
+  return rows.flatMap((row, i) => {
+    const listing = listings[i];
     if (!listing) return [];
-    const last = lastMessage.get(row.id) as MessageRow | undefined;
     return [
       {
         id: row.id,
         listing,
         otherName: row.other_name?.split(" ")[0] ?? "Deleted user",
         selling: row.seller_id === userId,
-        lastMessage: last ? toMessage(last) : null,
-        unread: row.unread,
+        lastMessage:
+          row.last_id != null
+            ? toMessage({ id: row.last_id, sender_id: row.last_sender_id!, body: row.last_body!, created_at: row.last_created_at! })
+            : null,
+        unread: Number(row.unread),
         lastMessageAt: row.last_message_at,
       },
     ];
@@ -189,9 +205,6 @@ export function listConversations(userId: string): ConversationSummary[] {
 }
 
 // Conversations with unread messages, for the header badge.
-export function unreadConversationCount(userId: string) {
-  const row = db()
-    .prepare(`SELECT COUNT(*) AS n FROM conversations c WHERE (c.buyer_id = ? OR c.seller_id = ?) AND ${UNREAD} > 0`)
-    .get(userId, userId, userId, userId) as { n: number };
-  return row.n;
+export async function unreadConversationCount(userId: string) {
+  return (await summaryRows(userId)).filter((row) => Number(row.unread) > 0).length;
 }

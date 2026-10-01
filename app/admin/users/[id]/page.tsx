@@ -35,11 +35,11 @@ export default async function AdminUserPage(props: PageProps<"/admin/users/[id]"
   const admin = await requireAdmin();
   if (!admin) notFound();
   const { id } = await props.params;
-  const user = getUserById(id);
+  const user = await getUserById(id);
   if (!user) notFound();
 
   const self = user.id === admin.id;
-  const listings = getListingsBySeller(user.id);
+  const [listings, sessions] = await Promise.all([getListingsBySeller(user.id), activeSessionCount(user.id)]);
   const p = user.profile;
   const fields = { userId: user.id };
   const here = `/admin/users/${user.id}`;
@@ -55,7 +55,7 @@ export default async function AdminUserPage(props: PageProps<"/admin/users/[id]"
     ["Cover", p ? `${COVER[p.cover]}, €${p.excess} excess` : "—"],
     ["Signed up", formatDate(user.createdAt, true)],
     ["Last login", formatDate(user.lastLoginAt, true)],
-    ["Signed in on", `${activeSessionCount(user.id)} device(s)`],
+    ["Signed in on", `${sessions} device(s)`],
     ["User ID", <code key="id" className="text-xs">{user.id}</code>],
   ];
 

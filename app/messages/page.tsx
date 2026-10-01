@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Messages · TRUCOST" };
 export default async function MessagesPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login?returnTo=/messages");
-  const conversations = listConversations(user.id);
+  const conversations = await listConversations(user.id);
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">

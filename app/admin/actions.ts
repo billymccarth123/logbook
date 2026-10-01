@@ -40,33 +40,33 @@ function refresh() {
 }
 
 export async function suspendUser(formData: FormData) {
-  setUserStatus(await targetFrom(formData), "suspended");
+  await setUserStatus(await targetFrom(formData), "suspended");
   refresh();
 }
 
 export async function reactivateUser(formData: FormData) {
-  setUserStatus(await targetFrom(formData), "active");
+  await setUserStatus(await targetFrom(formData), "active");
   refresh();
 }
 
 export async function makeAdmin(formData: FormData) {
-  setUserRole(await targetFrom(formData), "admin");
+  await setUserRole(await targetFrom(formData), "admin");
   refresh();
 }
 
 export async function removeAdmin(formData: FormData) {
-  setUserRole(await targetFrom(formData), "user");
+  await setUserRole(await targetFrom(formData), "user");
   refresh();
 }
 
 export async function signOutUser(formData: FormData) {
-  signOutEverywhere(await targetFrom(formData));
+  await signOutEverywhere(await targetFrom(formData));
   refresh();
 }
 
 // Also deletes their listings (ON DELETE CASCADE).
 export async function removeUser(formData: FormData) {
-  deleteUser(await targetFrom(formData));
+  await deleteUser(await targetFrom(formData));
   refresh();
   revalidatePath("/cars");
   redirect("/admin");
@@ -77,10 +77,10 @@ export async function updateUserDetails(_state: FormState, formData: FormData): 
   const userId = reader(formData)("userId");
   const result = parseProfile(reader(formData));
   if ("error" in result) return { error: result.error };
-  const existing = findUserByEmail(result.profile.email);
+  const existing = await findUserByEmail(result.profile.email);
   if (existing && existing.id !== userId) return { error: "Another account already uses that email." };
 
-  updateUserProfile(userId, result.profile);
+  await updateUserProfile(userId, result.profile);
   refresh();
   return { message: "Details saved. Their quotes will be worked out again." };
 }
@@ -97,20 +97,20 @@ export async function updateListingAsAdmin(_state: FormState, formData: FormData
   await adminOnly();
   const text = reader(formData);
   const id = text("listingId");
-  if (!getListing(id)) return { error: "That listing no longer exists." };
+  if (!(await getListing(id))) return { error: "That listing no longer exists." };
   const result = parseListing(text);
   if ("error" in result) return { error: result.error };
 
   const sellerEmail = text("sellerEmail");
-  const seller = sellerEmail ? findUserByEmail(sellerEmail) : null;
+  const seller = sellerEmail ? await findUserByEmail(sellerEmail) : null;
   if (sellerEmail && !seller) return { error: "No account uses that seller email." };
   // Optional here: a new photo replaces the current one.
   const upload = await parsePhoto(formData.get("photo"));
   if ("error" in upload) return { error: upload.error };
 
-  updateListing(id, result.listing);
-  setListingSeller(id, seller?.id ?? null);
-  if (upload.photo) savePhoto(id, upload.photo);
+  await updateListing(id, result.listing);
+  await setListingSeller(id, seller?.id ?? null);
+  if (upload.photo) await savePhoto(id, upload.photo);
   refresh();
   revalidatePath("/cars", "layout");
   revalidatePath("/");
@@ -119,7 +119,7 @@ export async function updateListingAsAdmin(_state: FormState, formData: FormData
 
 export async function removeListing(formData: FormData) {
   await adminOnly();
-  deleteListing(String(formData.get("listingId") ?? ""));
+  await deleteListing(String(formData.get("listingId") ?? ""));
   refresh();
   revalidatePath("/cars", "layout");
   revalidatePath("/");

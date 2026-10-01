@@ -15,7 +15,7 @@ const STEPS = [
 
 async function Rows() {
   const profile = await getProfile();
-  const listings = getListings();
+  const listings = await getListings();
   const quotes = profile ? await getQuotes(driverDetails(profile), listings) : null;
   const rows = listings.map((listing) => {
     const quote = quotes?.get(listing.id) ?? null;
@@ -76,7 +76,7 @@ export default async function Home() {
         </form>
 
         <div className="mt-4 flex flex-wrap gap-2">
-          {getMakes().map((make) => (
+          {(await getMakes()).map((make) => (
             <Link
               key={make}
               href={`/cars?make=${encodeURIComponent(make)}`}
