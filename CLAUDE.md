@@ -47,7 +47,7 @@ Quotes are built in two layers, and each shows a likely range across insurers as
 
 ### Accounts
 
-Accounts, sessions, listings, photos and messages are stored in Supabase Postgres. The tables and the 12 demo listings are created by `supabase/schema.sql` (run it in the Supabase SQL Editor; it's safe to rerun). The server connects with `SUPABASE_SERVICE_ROLE_KEY` (`lib/db.ts`). Every table has Row Level Security on with no policies, so the public anon key can't read anything. Logins use the app's own scrypt passwords and session tokens, stored in the `users` and `sessions` tables, not Supabase Auth.
+Accounts, sessions, listings, photos and messages are stored in Supabase Postgres. The database is `supabase/schema.sql` (the baseline: tables and the 12 demo listings) plus the migrations in `supabase/migrations/`, applied in filename order in the Supabase SQL Editor. Never edit a migration that has been applied; add a new one. Each migration has a rollback in `supabase/rollbacks/` (kept out of `migrations/` so the Supabase CLI doesn't apply it). The server connects with `SUPABASE_SERVICE_ROLE_KEY` (`lib/db.ts`). Every table has Row Level Security on with no policies, so the public anon key can't read anything. Logins use the app's own scrypt passwords and session tokens, stored in the `users` and `sessions` tables, not Supabase Auth.
 
 - **Sign-up** (`/signup`): name, email, password (10+ characters) and the quote questions, all in one form. It creates the user and logs them in.
 - **Log in and out** (`/login`, the Log out button on `/profile`): sessions last 30 days. The cookie holds a random token, and the database stores only its SHA-256 hash. After 5 failed logins an email is locked for 15 minutes (in memory).
@@ -59,7 +59,12 @@ Accounts, sessions, listings, photos and messages are stored in Supabase Postgre
   - `/admin/listings`: every listing with its seller. `/admin/listings/[id]` edits any field, or moves the listing to another account by seller email.
   - Admins can edit their own details but can't suspend, demote, delete or reset the password of their own account there, so there's always at least one admin.
 - **Code:** `lib/db.ts` (schema and connection), `lib/auth.ts` (passwords, sessions, users, admin queries), `app/actions.ts` (sign up, log in, update details, change password, create listing), `app/admin/`.
-- **Listings** are in the same database (`listings` table, `seller_id` links to `users`). The 12 demo listings are added by `supabase/schema.sql` while the table is empty, and have no seller.
+- **Listings** are in the same database (`listings` table, `seller_id` links to `users` and is required). The 12 demo listings are added by `supabase/schema.sql` while the table is empty. They belong to a demo seller account (`DEMO_SELLER_ID` in `lib/listings.ts`) that can't log in and is hidden from admin lists; the app shows its listings with no seller ("Demo listing", can't be messaged).
+- **Soft deletes:** deleting a user or listing sets `deleted_at` (and a listing's `status` to `removed`) instead of removing the row. Every query skips deleted rows. Deleted users can't log in, and their email stays taken (`users.email` is unique), so sign-up checks use `emailInUse`, which includes deleted accounts.
+- **Sessions** are revoked (`revoked_at`) rather than deleted on log out, password change and "sign out everywhere", and record the browser (`user_agent`) and `ip`.
+- **Listing status:** `draft`, `active`, `sold` or `removed`. Buyers only see `active` listings; the admin listings page shows all of them.
+- **Photos:** `listing_photos` allows several photos per listing (`position`); the site shows and replaces position 0. `storage_key` is for a planned move to object storage.
+- **Not used by the app yet** (tables and columns ready): `favourites`, `password_reset_tokens`, `email_verification_tokens`, `reports`, `users.email_verified_at`, `listings.sold_at`, `fuel_type`, `transmission`, `body_type`, `num_owners`, `registration`, `nct_expiry` and `county` (which duplicates `location`).
 
 Not built yet: password reset and email verification. Both need an email service, e.g. Resend or Postmark. The failed-login lockout and message rate limit are in memory, so they reset on restart and aren't shared between servers.
 
@@ -192,7 +197,8 @@ Set these in `.env.local` (ignored by git):
 - `lib/profile.ts`: the signed-in user's quote details
 - `lib/db.ts`: the server-only Supabase client (service role key)
 - `lib/auth.ts`: passwords, sessions, users, admin queries
-- `supabase/schema.sql`: tables, the inbox function and demo listings
+- `supabase/schema.sql`: the baseline (tables, the inbox function and demo listings)
+- `supabase/migrations/`: changes on top of the baseline, applied in filename order; `supabase/rollbacks/` undoes them
 - `lib/password-rules.ts`: password length rule shared with the form
 - `app/admin/`: users, user detail, listings and listing editor pages, actions, shared UI and CSV export
 - `public/`: static assets

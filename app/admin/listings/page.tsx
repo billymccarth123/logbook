@@ -16,7 +16,7 @@ export default async function AdminListingsPage(props: PageProps<"/admin/listing
   const { q } = await props.searchParams;
   const query = typeof q === "string" ? q.trim().toLowerCase() : "";
   const sellers = new Map((await listUsers()).map((user) => [user.id, user]));
-  const listings = (await getListings())
+  const listings = (await getListings({ includeInactive: true }))
     .filter((listing) => {
       if (!query) return true;
       const seller = listing.sellerId ? sellers.get(listing.sellerId) : undefined;

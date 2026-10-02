@@ -8,8 +8,8 @@ import {
   changePassword,
   checkCredentials,
   createUser,
+  emailInUse,
   endSession,
-  findUserByEmail,
   getCurrentUser,
   passwordProblem,
   startSession,
@@ -39,7 +39,7 @@ export async function signUp(_state: FormState, formData: FormData): Promise<For
   const password = String(formData.get("password") ?? "");
   const problem = passwordProblem(password);
   if (problem) return { error: problem };
-  if (await findUserByEmail(result.profile.email)) {
+  if (await emailInUse(result.profile.email)) {
     return { error: "An account with that email already exists. Log in instead." };
   }
 
@@ -70,8 +70,7 @@ export async function updateQuoteDetails(_state: FormState, formData: FormData):
   if (!user) redirect("/login?returnTo=/profile");
   const result = parseProfile(reader(formData));
   if ("error" in result) return { error: result.error };
-  const existing = await findUserByEmail(result.profile.email);
-  if (existing && existing.id !== user.id) return { error: "Another account already uses that email." };
+  if (await emailInUse(result.profile.email, user.id)) return { error: "Another account already uses that email." };
 
   await updateUserProfile(user.id, result.profile);
   warmQuotes(result.profile);

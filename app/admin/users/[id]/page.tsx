@@ -187,7 +187,7 @@ export default async function AdminUserPage(props: PageProps<"/admin/users/[id]"
                     action={removeUser}
                     fields={fields}
                     label="Delete account"
-                    message={`Permanently delete ${user.name}'s account and their ${listings.length} listing(s)? This can't be undone.`}
+                    message={`Delete ${user.name}'s account and their ${listings.length} listing(s)? They'll be hidden and the account can't log in. The records are kept.`}
                   />
                 </div>
                 <p className="mt-3 text-xs text-zinc-500">Suspending signs them out and blocks logging in.</p>

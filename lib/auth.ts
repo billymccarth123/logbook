@@ -1,10 +1,12 @@
 import "server-only";
 
 import { createHash, randomBytes, scrypt, timingSafeEqual } from "node:crypto";
+import { isIP } from "node:net";
 import { promisify } from "node:util";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { cache } from "react";
 import { db, must, mustCount, type Role, type Status, type UserRow } from "./db";
+import { DEMO_SELLER_ID } from "./listings";
 import { parseProfile, type DriverDetails, type Profile } from "./driver-profile";
 import { MIN_PASSWORD_LENGTH } from "./password-rules";
 
@@ -90,9 +92,21 @@ function toUser(row: UserRow): User {
   };
 }
 
-// Emails are case-insensitive (citext column).
+// Users are soft-deleted (deleted_at). Queries skip deleted users unless noted.
+function users() {
+  return db().from("users").select("*").is("deleted_at", null);
+}
+
+// Emails are case-insensitive (citext column). Skips deleted users.
 export async function findUserByEmail(email: string) {
-  return must(await db().from("users").select("*").eq("email", email).maybeSingle<UserRow>());
+  return must(await users().eq("email", email).maybeSingle<UserRow>());
+}
+
+// Whether another account already has this email. Includes deleted accounts:
+// users.email is UNIQUE, so a deleted account's email can't be reused.
+export async function emailInUse(email: string, exceptUserId?: string) {
+  const row = must(await db().from("users").select("id").eq("email", email).maybeSingle<{ id: string }>());
+  return row != null && row.id !== exceptUserId;
 }
 
 export async function createUser(profile: Profile, password: string) {
@@ -140,8 +154,9 @@ export async function changePassword(userId: string, current: string, next: stri
   must(
     await db()
       .from("sessions")
-      .delete()
+      .update({ revoked_at: new Date().toISOString() })
       .eq("user_id", userId)
+      .is("revoked_at", null)
       .neq("token_hash", token ? hashToken(token) : ""),
   );
   return null;
@@ -186,16 +201,25 @@ function hashToken(token: string) {
   return createHash("sha256").update(token).digest("hex");
 }
 
+// The visitor's IP address, if the request carries a valid one (sessions.ip is inet).
+function clientIp(requestHeaders: Headers) {
+  const ip = (requestHeaders.get("x-forwarded-for")?.split(",")[0] ?? requestHeaders.get("x-real-ip") ?? "").trim();
+  return isIP(ip) ? ip : null;
+}
+
 export async function startSession(userId: string) {
   const token = randomBytes(32).toString("base64url");
   const now = new Date();
   const expires = new Date(now.getTime() + SESSION_DAYS * 86_400_000);
+  const requestHeaders = await headers();
   must(
     await db().from("sessions").insert({
       token_hash: hashToken(token),
       user_id: userId,
       created_at: now.toISOString(),
       expires_at: expires.toISOString(),
+      user_agent: requestHeaders.get("user-agent")?.slice(0, 500) ?? null,
+      ip: clientIp(requestHeaders),
     }),
   );
   (await cookies()).set(SESSION_COOKIE, token, {
@@ -210,7 +234,15 @@ export async function startSession(userId: string) {
 export async function endSession() {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE)?.value;
-  if (token) must(await db().from("sessions").delete().eq("token_hash", hashToken(token)));
+  if (token) {
+    must(
+      await db()
+        .from("sessions")
+        .update({ revoked_at: new Date().toISOString() })
+        .eq("token_hash", hashToken(token))
+        .is("revoked_at", null),
+    );
+  }
   cookieStore.delete(SESSION_COOKIE);
 }
 
@@ -223,8 +255,10 @@ export const getCurrentUser = cache(async (): Promise<User | null> => {
       .from("sessions")
       .select("users!inner(*)")
       .eq("token_hash", hashToken(token))
+      .is("revoked_at", null)
       .gt("expires_at", new Date().toISOString())
       .eq("users.status", "active")
+      .is("users.deleted_at", null)
       .maybeSingle<{ users: UserRow }>(),
   );
   return session ? toUser(session.users) : null;
@@ -238,15 +272,18 @@ export async function requireAdmin() {
 // ---- Admin ----
 
 // Every user, newest first, optionally matching name, email or phone.
+// Leaves out deleted users and the demo listings' owner.
 export async function listUsers(query = "") {
-  const rows = must(await db().from("users").select("*").order("created_at", { ascending: false })) as UserRow[];
+  const rows = must(
+    await users().neq("id", DEMO_SELLER_ID).order("created_at", { ascending: false }),
+  ) as UserRow[];
   const q = query.trim().toLowerCase();
   const matches = q ? rows.filter((row) => `${row.email} ${row.name} ${row.phone}`.toLowerCase().includes(q)) : rows;
   return matches.map(toUser);
 }
 
 export async function getUserById(userId: string) {
-  const row = must(await db().from("users").select("*").eq("id", userId).maybeSingle<UserRow>());
+  const row = must(await users().eq("id", userId).maybeSingle<UserRow>());
   return row ? toUser(row) : null;
 }
 
@@ -256,12 +293,19 @@ export async function activeSessionCount(userId: string) {
       .from("sessions")
       .select("*", { count: "exact", head: true })
       .eq("user_id", userId)
+      .is("revoked_at", null)
       .gt("expires_at", new Date().toISOString()),
   );
 }
 
 export async function signOutEverywhere(userId: string) {
-  must(await db().from("sessions").delete().eq("user_id", userId));
+  must(
+    await db()
+      .from("sessions")
+      .update({ revoked_at: new Date().toISOString() })
+      .eq("user_id", userId)
+      .is("revoked_at", null),
+  );
 }
 
 // Sets a new password without the old one, and signs the user out everywhere.
@@ -275,12 +319,13 @@ export async function setPasswordAsAdmin(userId: string, password: string) {
 
 export async function userStats() {
   const weekAgo = new Date(Date.now() - 7 * 86_400_000).toISOString();
-  const users = () => db().from("users").select("*", { count: "exact", head: true });
+  const count = () =>
+    db().from("users").select("*", { count: "exact", head: true }).is("deleted_at", null).neq("id", DEMO_SELLER_ID);
   const [total, newThisWeek, activeThisWeek, suspended] = await Promise.all([
-    users(),
-    users().gt("created_at", weekAgo),
-    users().gt("last_login_at", weekAgo),
-    users().eq("status", "suspended"),
+    count(),
+    count().gt("created_at", weekAgo),
+    count().gt("last_login_at", weekAgo),
+    count().eq("status", "suspended"),
   ]);
   return {
     total: mustCount(total),
@@ -299,7 +344,17 @@ export async function setUserRole(userId: string, role: Role) {
   must(await db().from("users").update({ role }).eq("id", userId));
 }
 
-// Also deletes their listings, sessions and conversations (ON DELETE CASCADE).
+// Soft delete: the account can't log in or be found, and their listings are
+// soft-deleted too. Rows (and their conversations) are kept for records.
 export async function deleteUser(userId: string) {
-  must(await db().from("users").delete().eq("id", userId));
+  const now = new Date().toISOString();
+  must(await db().from("users").update({ deleted_at: now }).eq("id", userId).is("deleted_at", null));
+  await signOutEverywhere(userId);
+  must(
+    await db()
+      .from("listings")
+      .update({ deleted_at: now, status: "removed" })
+      .eq("seller_id", userId)
+      .is("deleted_at", null),
+  );
 }

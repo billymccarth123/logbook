@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
   deleteUser,
+  emailInUse,
   findUserByEmail,
   requireAdmin,
   setPasswordAsAdmin,
@@ -64,7 +65,7 @@ export async function signOutUser(formData: FormData) {
   refresh();
 }
 
-// Also deletes their listings (ON DELETE CASCADE).
+// Soft-deletes the account and their listings (see deleteUser).
 export async function removeUser(formData: FormData) {
   await deleteUser(await targetFrom(formData));
   refresh();
@@ -77,8 +78,7 @@ export async function updateUserDetails(_state: FormState, formData: FormData): 
   const userId = reader(formData)("userId");
   const result = parseProfile(reader(formData));
   if ("error" in result) return { error: result.error };
-  const existing = await findUserByEmail(result.profile.email);
-  if (existing && existing.id !== userId) return { error: "Another account already uses that email." };
+  if (await emailInUse(result.profile.email, userId)) return { error: "Another account already uses that email." };
 
   await updateUserProfile(userId, result.profile);
   refresh();

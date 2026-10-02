@@ -5,9 +5,19 @@ import { isColour, type Colour } from "./colours";
 import { isCounty } from "./counties";
 import { db, must, mustCount } from "./db";
 
+// Owner of the demo listings (created by the 20261002120000 migration so
+// listings.seller_id can be NOT NULL). It can't log in, and the app treats its
+// listings as having no seller: sellerId is null, they show as "Demo listing"
+// and can't be messaged.
+export const DEMO_SELLER_ID = "00000000-0000-4000-8000-000000000001";
+
+export type ListingStatus = "draft" | "active" | "sold" | "removed";
+
 export type Listing = {
   id: string;
+  // null for demo listings.
   sellerId: string | null;
+  status: ListingStatus;
   make: string;
   model: string;
   year: number;
@@ -22,13 +32,14 @@ export type Listing = {
   photoUrl: string | null;
 };
 
-export type ListingInput = Omit<Listing, "id" | "sellerId" | "createdAt" | "photoUrl">;
+export type ListingInput = Omit<Listing, "id" | "sellerId" | "status" | "createdAt" | "photoUrl">;
 
 export type ListingPhoto = { mime: string; data: Uint8Array };
 
 type ListingRow = {
   id: number;
-  seller_id: string | null;
+  seller_id: string;
+  status: ListingStatus;
   make: string;
   model: string;
   year: number;
@@ -39,7 +50,8 @@ type ListingRow = {
   colour: string;
   description: string;
   created_at: string;
-  listing_photos: { updated_at: string } | null;
+  // A listing can have several photos; the one at the lowest position is shown.
+  listing_photos: { position: number; updated_at: string }[];
 };
 
 // Validates the sell form (also used by the admin listing editor).
@@ -70,9 +82,11 @@ export function parseListing(get: (key: string) => string): { error: string } | 
 }
 
 function toListing(row: ListingRow): Listing {
+  const photo = [...row.listing_photos].sort((a, b) => a.position - b.position)[0];
   return {
     id: String(row.id),
-    sellerId: row.seller_id,
+    sellerId: row.seller_id === DEMO_SELLER_ID ? null : row.seller_id,
+    status: row.status,
     make: row.make,
     model: row.model,
     year: row.year,
@@ -84,9 +98,7 @@ function toListing(row: ListingRow): Listing {
     description: row.description,
     createdAt: row.created_at,
     // The version in the URL lets browsers cache a photo until it's replaced.
-    photoUrl: row.listing_photos
-      ? `/listing-photos/${row.id}?v=${encodeURIComponent(row.listing_photos.updated_at)}`
-      : null,
+    photoUrl: photo ? `/listing-photos/${row.id}?v=${encodeURIComponent(photo.updated_at)}` : null,
   };
 }
 
@@ -112,17 +124,22 @@ export async function parsePhoto(value: FormDataEntryValue | null): Promise<{ er
   return { photo: { mime, data } };
 }
 
-// Photos are stored base64-encoded in listing_photos.data.
-export async function savePhoto(listingId: string, photo: ListingPhoto) {
+// Photos are stored base64-encoded in listing_photos.data. The site shows one
+// photo per listing, at position 0; saving again replaces it.
+export async function savePhoto(listingId: string, photo: ListingPhoto, position = 0) {
   must(
     await db()
       .from("listing_photos")
-      .upsert({
-        listing_id: Number(listingId),
-        mime: photo.mime,
-        data: Buffer.from(photo.data).toString("base64"),
-        updated_at: new Date().toISOString(),
-      }),
+      .upsert(
+        {
+          listing_id: Number(listingId),
+          position,
+          mime: photo.mime,
+          data: Buffer.from(photo.data).toString("base64"),
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "listing_id,position" },
+      ),
   );
 }
 
@@ -133,30 +150,38 @@ export async function getPhoto(listingId: string): Promise<ListingPhoto | null> 
       .from("listing_photos")
       .select("mime, data")
       .eq("listing_id", listingId)
+      .order("position")
+      .limit(1)
       .maybeSingle<{ mime: string; data: string }>(),
   );
   return row ? { mime: row.mime, data: new Uint8Array(Buffer.from(row.data, "base64")) } : null;
 }
 
-// Every listing column plus the photo's version, if it has one.
-const SELECT = "*, listing_photos(updated_at)";
+// Every listing column plus each photo's position and version.
+const SELECT = "*, listing_photos(position, updated_at)";
 
-export async function getListings() {
-  const rows = must(await db().from("listings").select(SELECT).order("id")) as ListingRow[];
+// Listings are soft-deleted (deleted_at); every query below skips those.
+function listings() {
+  return db().from("listings").select(SELECT).is("deleted_at", null);
+}
+
+// Live listings for buyers. Admins pass includeInactive to also see drafts,
+// sold and removed listings.
+export async function getListings({ includeInactive = false } = {}) {
+  const query = includeInactive ? listings() : listings().eq("status", "active");
+  const rows = must(await query.order("id")) as ListingRow[];
   return rows.map(toListing);
 }
 
 export async function getListing(id: string) {
   if (!/^\d+$/.test(id)) return undefined;
-  const row = must(await db().from("listings").select(SELECT).eq("id", id).maybeSingle<ListingRow>());
+  const row = must(await listings().eq("id", id).maybeSingle<ListingRow>());
   return row ? toListing(row) : undefined;
 }
 
 export async function getListingsBySeller(sellerId: string) {
   const rows = must(
-    await db()
-      .from("listings")
-      .select(SELECT)
+    await listings()
       .eq("seller_id", sellerId)
       .order("created_at", { ascending: false })
       .order("id", { ascending: false }),
@@ -165,7 +190,9 @@ export async function getListingsBySeller(sellerId: string) {
 }
 
 export async function getMakes() {
-  const rows = must(await db().from("listings").select("make")) as { make: string }[];
+  const rows = must(
+    await db().from("listings").select("make").is("deleted_at", null).eq("status", "active"),
+  ) as { make: string }[];
   return [...new Set(rows.map((row) => row.make))].sort();
 }
 
@@ -176,7 +203,9 @@ export async function addListing(data: ListingInput, sellerId: string, photo: Li
   try {
     await savePhoto(id, photo);
   } catch (error) {
-    await deleteListing(id);
+    // Undo the insert outright: the listing was never shown to anyone, so
+    // there's nothing to keep a soft-deleted copy of.
+    must(await db().from("listings").delete().eq("id", id));
     throw error;
   }
   return (await getListing(id))!;
@@ -186,7 +215,7 @@ async function insertListing(data: ListingInput, sellerId: string) {
   const row = must(
     await db()
       .from("listings")
-      .insert({ seller_id: sellerId, ...columns(data), created_at: new Date().toISOString().slice(0, 10) })
+      .insert({ seller_id: sellerId, ...columns(data) })
       .select("id")
       .single<{ id: number }>(),
   );
@@ -211,25 +240,32 @@ export async function updateListing(id: string, data: ListingInput) {
   must(await db().from("listings").update(columns(data)).eq("id", id));
 }
 
-// sellerId null makes it an unowned listing.
+// sellerId null makes it a demo listing (owned by the demo seller account).
 export async function setListingSeller(id: string, sellerId: string | null) {
-  must(await db().from("listings").update({ seller_id: sellerId }).eq("id", id));
+  must(await db().from("listings").update({ seller_id: sellerId ?? DEMO_SELLER_ID }).eq("id", id));
 }
 
+// Soft delete: hidden everywhere, but the row is kept.
 export async function deleteListing(id: string) {
   if (!/^\d+$/.test(id)) return;
-  must(await db().from("listings").delete().eq("id", id));
+  must(
+    await db()
+      .from("listings")
+      .update({ deleted_at: new Date().toISOString(), status: "removed" })
+      .eq("id", id)
+      .is("deleted_at", null),
+  );
 }
 
 export async function countListings() {
-  return mustCount(await db().from("listings").select("*", { count: "exact", head: true }));
+  return mustCount(await db().from("listings").select("*", { count: "exact", head: true }).is("deleted_at", null));
 }
 
 // Listing counts per seller, for the admin users table.
 export async function listingCountsBySeller() {
-  const rows = must(await db().from("listings").select("seller_id").not("seller_id", "is", null)) as {
-    seller_id: string;
-  }[];
+  const rows = must(
+    await db().from("listings").select("seller_id").is("deleted_at", null).neq("seller_id", DEMO_SELLER_ID),
+  ) as { seller_id: string }[];
   const counts = new Map<string, number>();
   for (const row of rows) counts.set(row.seller_id, (counts.get(row.seller_id) ?? 0) + 1);
   return counts;

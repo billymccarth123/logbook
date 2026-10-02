@@ -127,7 +127,7 @@ export default async function AdminPage(props: PageProps<"/admin">) {
                               action={removeUser}
                               fields={fields}
                               label="Delete"
-                              message={`Permanently delete ${user.name}'s account and their listings? This can't be undone.`}
+                              message={`Delete ${user.name}'s account and their listings? They'll be hidden and the account can't log in. The records are kept.`}
                             />
                           </>
                         )}

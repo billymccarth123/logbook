@@ -22,6 +22,9 @@ export type UserRow = {
   details: Record<string, unknown>;
   created_at: string;
   last_login_at: string | null;
+  email_verified_at: string | null;
+  updated_at: string;
+  deleted_at: string | null;
 };
 
 const globalForDb = globalThis as unknown as { trucostDb?: SupabaseClient };
